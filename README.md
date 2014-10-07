@@ -11,12 +11,16 @@ API links in order to get started
 * https://diavgeia.gov.gr/luminapi/opendata/organizations/:uid/units
   * Get a list with all the units in this organization.
 * https://diavgeia.gov.gr/luminapi/opendata/organizations/:uid/signers
-  * Get a list with all the signers in this organization
+  * Get a list with all the signers in this organization.
 * https://diavgeia.gov.gr/luminapi/opendata/types/
-  * Get all the types that exist in the database
+  * Get all the types that exist in the database.
 * https://diavgeia.gov.gr/luminapi/opendata/dictionaries
-  * Get all the dictionaries in the database
+  * Get all the dictionaries in the database.
 * https://diavgeia.gov.gr/luminapi/opendata/dictionaries/:uid
-  * More info on each dictionary
+  * More info on each dictionary.
 * https://diavgeia.gov.gr/luminapi/opendata/types/:uid/details
-  * Get details for each type (including extra fields)
+  * Get details for each type (including extra fields).
+* https://diavgeia.gov.gr/luminapi/opendata/positions
+  * Get a list with all positions available in Diaugeia.
+* https://diavgeia.gov.gr/luminapi/opendata/organizations/:org/positions
+  * Get a list with all positions from current organization.
