@@ -24,3 +24,8 @@ API links in order to get started
   * Get a list with all positions available in Diaugeia.
 * https://diavgeia.gov.gr/luminapi/opendata/organizations/:org/positions
   * Get a list with all positions from current organization.
+
+Αποφάσεις για το Δήμο Θεσσαλονίκης
+----------------------------------
+
+https://diavgeia.gov.gr/luminapi/opendata/search?org=6114&from_date=2006-07-01&size=500&page=0&status=all
