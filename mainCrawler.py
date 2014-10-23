@@ -90,15 +90,15 @@ def main(argv=None):
 		print q;
 		response = client.get_advanced_search_results(q,page,query_size)
 		total = printInfo (response)
-	# print (total)
+		# print (total)
 		steps = total/query_size
-	# print (steps)
-	# print ("***ACTUAL DECISIONS***")
-	printAllDecisionsPDF(response)
-		for x in range(1,steps+1):
-			print("Page ",x)
-			response = client.get_advanced_search_results(q,x,query_size)
-			printAllDecisionsPDF(response,organization)
+		# print (steps)
+		# print ("***ACTUAL DECISIONS***")
+		printAllDecisionsPDF(response)
+		# for x in range(1,steps+1):
+			# print("Page ",x)
+			# response = client.get_advanced_search_results(q,x,query_size)
+			# printAllDecisionsPDF(response,organization)
 	return 0
 
 if __name__ == "__main__":
