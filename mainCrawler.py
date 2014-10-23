@@ -9,6 +9,20 @@ import sys
 query_size = 500;
 page = 0;
 
+def findAllOrgForPerifereia (response):
+	'''Find all organizations that have as supervisor Perifereia Kentrikis Makedonias
+
+	Arguments:
+	response: a json response returned from OpendataClient 
+	'''
+	file = open("organizationsPeriferia", "w")
+	organizations = response["organizations"]
+	file.write("22898"+"\n")
+	file.write("50205"+"\n")
+	for org in organizations:
+		if (org["supervisorId"]=="5009"):
+			file.write(org["uid"]+"\n")
+	file.close()
 
 def printAllTypes (response):
 	'''Print all the types' labels
@@ -32,13 +46,13 @@ def printAllDictionaries (response):
 		print i["label"]
 
 
-def printAllDecisionsPDF (response):
+def printAllDecisionsPDF (response,filename):
 	'''Print the urls of all decisions
 
 	Arguments:
 	response: a json response returned from OpendataClient 
 	'''
-	file = open("out", "a")
+	file = open(filename, "a")
 	decisions = response["decisions"]
 	for decision in decisions:
 		for i in decision:
@@ -61,24 +75,30 @@ def printInfo (response):
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")
-	print "***TYPES***"
-	response = client.get_decision_types()
-	printAllTypes(response)
-	print "***DICTIONARIES***"
-	response = client.get_dictionaries()
-	printAllDictionaries(response)
-	# q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:\"6114\")"
-	# response = client.get_advanced_search_results(q,page,query_size)
-	# total = printInfo (response)
+	# print "***TYPES***"
+	# response = client.get_decision_types()
+	# printAllTypes(response)
+	# print "***DICTIONARIES***"
+	# response = client.get_dictionaries()
+	# response = client.get_organizations()
+	# print (response);
+	# findAllOrgForPerifereia(response)
+	# printAllDictionaries(response)
+	content = [line.strip() for line in open('organizationsPeriferia')]
+	for organization in content:
+		q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:"+organization+")"
+		print q;
+		response = client.get_advanced_search_results(q,page,query_size)
+		total = printInfo (response)
 	# print (total)
-	# steps = total/query_size
+		steps = total/query_size
 	# print (steps)
 	# print ("***ACTUAL DECISIONS***")
-	# printAllDecisionsPDF(response)
-	# for x in range(1,steps+1):
-		# print("Page ",x)
-		# response = client.get_advanced_search_results(q,x,query_size)
-		# printAllDecisionsPDF(response)
+	printAllDecisionsPDF(response)
+		for x in range(1,steps+1):
+			print("Page ",x)
+			response = client.get_advanced_search_results(q,x,query_size)
+			printAllDecisionsPDF(response,organization)
 	return 0
 
 if __name__ == "__main__":
