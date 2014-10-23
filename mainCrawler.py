@@ -94,7 +94,7 @@ def main(argv=None):
 		steps = total/query_size
 		# print (steps)
 		# print ("***ACTUAL DECISIONS***")
-		printAllDecisionsPDF(response)
+		printAllDecisionsPDF(response,organization)
 		# for x in range(1,steps+1):
 			# print("Page ",x)
 			# response = client.get_advanced_search_results(q,x,query_size)
