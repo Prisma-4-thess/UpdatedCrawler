@@ -22,6 +22,7 @@ def findAllOrgForPerifereia (response):
 	for org in organizations:
 		if (org["supervisorId"]=="5009"):
 			file.write(org["uid"]+"\n")
+			print org["uid"]+":"+org["latinName"]
 	file.close()
 
 def printAllTypes (response):
@@ -80,9 +81,9 @@ def main(argv=None):
 	# printAllTypes(response)
 	# print "***DICTIONARIES***"
 	# response = client.get_dictionaries()
-	# response = client.get_organizations()
+	response = client.get_organizations()
 	# print (response);
-	# findAllOrgForPerifereia(response)
+	findAllOrgForPerifereia(response)
 	# printAllDictionaries(response)
 	content = [line.strip() for line in open('organizationsPeriferia')]
 	for organization in content:
@@ -95,10 +96,10 @@ def main(argv=None):
 		# print (steps)
 		# print ("***ACTUAL DECISIONS***")
 		printAllDecisionsPDF(response,organization)
-		# for x in range(1,steps+1):
-			# print("Page ",x)
-			# response = client.get_advanced_search_results(q,x,query_size)
-			# printAllDecisionsPDF(response,organization)
+		for x in range(1,steps+1):
+			print("Page ",x)
+			response = client.get_advanced_search_results(q,x,query_size)
+			printAllDecisionsPDF(response,organization)
 	return 0
 
 if __name__ == "__main__":
