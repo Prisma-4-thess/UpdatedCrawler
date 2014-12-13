@@ -35,16 +35,35 @@ def printAllTypes (response):
 	for i in allDictionaries:
 		print i["label"]
 
+def printDictionaryDetails(client,uid):
+	'''Print details for a specific dictionary
 
-def printAllDictionaries (response):
+	Arguments:
+	client: OpendataClient instance
+	uid: The Dictionary's uid
+	'''
+	response = client.get_dictionary(uid)
+	# print(response)
+	allDictionaries = response["items"]
+	for detail in allDictionaries:
+		for key in detail:
+			if (detail[key]!=None):
+				print '\t\t'+key+": "+detail[key]
+	# print (allDictionaries)
+
+def printAllDictionaries (response,client):
 	'''Print all the dictionaries' labels
 
 	Arguments:
 	response: a json response returned from OpendataClient 
+	client: OpendataClient instance
 	'''
 	allDictionaries = response["dictionaries"]
 	for i in allDictionaries:
-		print i["label"]
+		print "Dictionary: "+i['uid']
+		print '\t'+i["label"]
+		printDictionaryDetails(client,i['uid'])
+
 
 
 # def printAllDecisionsPDF (response,filename):
@@ -106,9 +125,10 @@ def main(argv=None):
 	# response = client.get_decision_types()
 	# printAllTypes(response)
 	# print "***DICTIONARIES***"
-	# response = client.get_dictionaries()
-	response = client.get_organizations()
-	printOrganizations(response)
+	response = client.get_dictionaries()
+	# response = client.get_organizations()
+	# printOrganizations(response)
+	printAllDictionaries(response,client)
 	# print (response);
 	
 	# printAllDictionaries(response)
