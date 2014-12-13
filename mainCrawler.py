@@ -108,15 +108,16 @@ def printOrganizations (response):
 			if (organization[key]!=None and key!='uid' and key!='organizationDomains'):
 				print "\t"+key+": "+organization[key]
 
-def printOrganizations (response):
-	organizations = response["organizations"]
-	for organization in organizations:
-		print "Organization "+organization["uid"]
-		for key in organization:
-			# print organization[key]!=None
-			# print key
-			if (organization[key]!=None and key!='uid' and key!='organizationDomains'):
-				print "\t"+key+": "+organization[key]
+def printPositions (response):
+	'''Return all positions from diavgeia
+
+	Arguments
+	response: a json response returned from OpendataClient
+	'''
+	positions = response["positions"]
+	for position in positions:
+		print "Position "+position["uid"]
+		print "\tLabel: "+position["label"]
 		
 
 def main(argv=None):
@@ -125,10 +126,12 @@ def main(argv=None):
 	# response = client.get_decision_types()
 	# printAllTypes(response)
 	# print "***DICTIONARIES***"
-	response = client.get_dictionaries()
+	# response = client.get_dictionaries()
 	# response = client.get_organizations()
+	response = client.get_positions()
+	printPositions(response)
 	# printOrganizations(response)
-	printAllDictionaries(response,client)
+	# printAllDictionaries(response,client)
 	# print (response);
 	
 	# printAllDictionaries(response)
