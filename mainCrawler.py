@@ -25,15 +25,20 @@ page = 0;
 # 			print org["uid"]+":"+org["latinName"]
 # 	file.close()
 
-def printAllTypes (response):
+def printTypes (response):
 	'''Print all the types' labels
 
 	Arguments:
 	response: a json response returned from OpendataClient 
 	'''
-	allDictionaries = response["decisionTypes"]
-	for i in allDictionaries:
-		print i["label"]
+	d_types = response["decisionTypes"]
+	for d_type in d_types:
+		print "Type: "+d_type['uid']
+		for key in d_type:
+			if (isinstance(d_type[key], (bool))):
+				print "\t"+key+": "+str(d_type[key])
+			elif (d_type[key]!=None and key!='uid'):
+				print "\t"+key+": "+d_type[key]
 
 def printDictionaryDetails(client,uid):
 	'''Print details for a specific dictionary
@@ -123,13 +128,13 @@ def printPositions (response):
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")
 	# print "***TYPES***"
-	# response = client.get_decision_types()
-	# printAllTypes(response)
 	# print "***DICTIONARIES***"
+	response = client.get_decision_types()
 	# response = client.get_dictionaries()
 	# response = client.get_organizations()
-	response = client.get_positions()
-	printPositions(response)
+	# response = client.get_positions()
+	printTypes(response)
+	# printPositions(response)
 	# printOrganizations(response)
 	# printAllDictionaries(response,client)
 	# print (response);
