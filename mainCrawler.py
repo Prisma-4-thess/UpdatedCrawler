@@ -6,6 +6,7 @@ import opendata
 import json
 import sys
 
+
 query_size = 500;
 page = 0;
 
@@ -25,7 +26,7 @@ page = 0;
 # 			print org["uid"]+":"+org["latinName"]
 # 	file.close()
 
-def printTypes (response):
+def printTypes (response,client):
 	'''Print all the types' labels
 
 	Arguments:
@@ -39,6 +40,47 @@ def printTypes (response):
 				print "\t"+key+": "+str(d_type[key])
 			elif (d_type[key]!=None and key!='uid'):
 				print "\t"+key+": "+d_type[key]
+		printTypesDetails(client,d_type['uid'].encode('utf-8'))
+
+def printTypesDetails(client,uid):
+	'''Print details for a specific dictionary
+
+	Arguments:
+	client: OpendataClient instance
+	uid: The Dictionary's uid
+	'''
+	response = client.get_decision_type_details(uid)
+	# print(response)
+	print '\t\tExtraFields:'
+	wait = raw_input("PRESS TO CONTINUE...")
+	for extrafield in response['extraFields']:
+		print '\t\t\t'+extrafield['uid']
+		for details in extrafield:
+			print '\t\t\t\t'+details+': ',
+			if (details=='fixedValueList' and extrafield[details]!=None):
+				print (' ')
+				for field in extrafield[details]:
+					print '\t\t\t\t\t'+field
+			elif(details=='nestedFields' and extrafield[details]!=None):
+				print (' ')
+				for field in extrafield[details]:
+					print '\t\t\t\t\t'+field['uid']
+					for nested_detail in field:
+						if (nested_detail!='uid' and nested_detail!='nestedFields'):
+							print '\t\t\t\t\t\t'+nested_detail+': ',
+							print field[nested_detail]
+						if(nested_detail=='nestedFields' and field[nested_detail]!=None):
+							print (' ')
+							for field2 in field[nested_detail]:
+								print '\t\t\t\t\t\t\t'+field2['uid']
+								for nested_detail2 in field2:
+									if (nested_detail2!='uid'):
+										print '\t\t\t\t\t\t\t\t'+nested_detail2+': ',
+										print field2[nested_detail2]
+			else: 
+				print extrafield[details]
+	if (response['parent']!=None): print '\t\tParent: '+response['parent']
+	# print (allDictionaries)
 
 def printDictionaryDetails(client,uid):
 	'''Print details for a specific dictionary
@@ -49,8 +91,8 @@ def printDictionaryDetails(client,uid):
 	'''
 	response = client.get_dictionary(uid)
 	# print(response)
-	allDictionaries = response["items"]
-	for detail in allDictionaries:
+	items = response["items"]
+	for detail in items:
 		for key in detail:
 			if (detail[key]!=None):
 				print '\t\t'+key+": "+detail[key]
@@ -133,7 +175,7 @@ def main(argv=None):
 	# response = client.get_dictionaries()
 	# response = client.get_organizations()
 	# response = client.get_positions()
-	printTypes(response)
+	printTypes(response,client)
 	# printPositions(response)
 	# printOrganizations(response)
 	# printAllDictionaries(response,client)
