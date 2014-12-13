@@ -140,11 +140,12 @@ def printInfo (response):
 		if (i==u'total'):
 			return info[i]
 
-def printOrganizations (response):
+def printOrganizations (response,client):
 	'''Return all organizations from diavgeia
 
 	Arguments
 	response: a json response returned from OpendataClient
+	client: OpendataClient instance
 	'''
 	organizations = response["organizations"]
 	for organization in organizations:
@@ -154,6 +155,23 @@ def printOrganizations (response):
 			# print key
 			if (organization[key]!=None and key!='uid' and key!='organizationDomains'):
 				print "\t"+key+": "+organization[key]
+		printUnits(client,organization["uid"])
+
+def printUnits(client,uid):
+	'''Print units for a specific organization
+
+	Arguments:
+	client: OpendataClient instance
+	uid: The organization's uid
+	'''
+	units = client.get_organization_units(uid)['units']
+	for unit in units:
+		print "\t\tUnit "+unit['uid']
+		for detail in unit:
+			print "\t\t\t"+detail+': ',
+			print unit[detail]
+	# for unit in units:
+		# print unit
 
 def printPositions (response):
 	'''Return all positions from diavgeia
@@ -171,13 +189,13 @@ def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")
 	# print "***TYPES***"
 	# print "***DICTIONARIES***"
-	response = client.get_decision_types()
+	# response = client.get_decision_types()
 	# response = client.get_dictionaries()
-	# response = client.get_organizations()
+	response = client.get_organizations()
 	# response = client.get_positions()
-	printTypes(response,client)
+	# printTypes(response,client)
 	# printPositions(response)
-	# printOrganizations(response)
+	printOrganizations(response,client)
 	# printAllDictionaries(response,client)
 	# print (response);
 	
