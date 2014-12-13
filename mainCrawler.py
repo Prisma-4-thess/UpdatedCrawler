@@ -52,7 +52,7 @@ def printTypesDetails(client,uid):
 	response = client.get_decision_type_details(uid)
 	# print(response)
 	print '\t\tExtraFields:'
-	wait = raw_input("PRESS TO CONTINUE...")
+	# wait = raw_input("PRESS TO CONTINUE...")
 	for extrafield in response['extraFields']:
 		print '\t\t\t'+extrafield['uid']
 		for details in extrafield:
