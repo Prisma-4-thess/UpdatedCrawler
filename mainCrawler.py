@@ -225,7 +225,7 @@ def insertIntoOrganizations(db,cursor,value):
 	'''
 	fields = ['uid','abbreviation','category','fekIssue','fekNumber','fekYear','label','latinName','odeManagerEmail','status','supervisorId','vatNumber','website']
 	# SQLcommand = "insert into organization('organization_id','abbreviation','category_id','fek_issue_id','fek_number','fek_year','label','latin','ode_manager_email','status','supervisor_id','vat_number','website') VALUES ("+values+")"
-	SQLcommand = "insert into organization('organization_id','abbreviation','category_id','fek_issue_id,'fek_number','fek_year','label','latin_name','ode_manager_email','status','supervisor_id,'vat_number','website') VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+	SQLcommand = "insert into organization(organization_id,abbreviation,category_id,fek_issue_id,fek_number,fek_year,label,latin_name,ode_manager_email,status,supervisor_id,vat_number,website) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 	print SQLcommand
 	actuallInsertion(fields,SQLcommand,cursor,db,value)
 	# cursor.execute(SQLcommand)
