@@ -142,7 +142,7 @@ def printInfo (response):
 		if (i==u'total'):
 			return info[i]
 
-def printOrganizations (response,client):
+def printOrganizations (response,client,updateSQL=False):
 	'''Return all organizations from diavgeia
 
 	Arguments
@@ -158,6 +158,17 @@ def printOrganizations (response,client):
 			if (organization[key]!=None and key!='uid' and key!='organizationDomains'):
 				print "\t"+key+": "+organization[key]
 		printUnits(client,organization["uid"])
+
+def insertIntoOrganizations(db,cursor):
+	'''Insert organizations into MySQL db
+
+	Arguments
+	db: Connection to MySQL database
+	cursor: Cursor for the db
+	'''
+	SQLcommand = "insert into organization(`organization_id`,`abbreviation`,`category_id`,`fek_issue_id`,`fek_number`,`fek_year`,`label`,`latin_name`,`ode_manager_email`,`status`,`supervisor_id`,`vat_number`,website`) VALUES "
+
+	db.commit()
 
 def printUnits(client,uid):
 	'''Print units for a specific organization
@@ -190,7 +201,9 @@ def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")
 	db = con.connectMySQL()
 	cur = db.cursor()
-	cur.execute("show create table ")
+	response = client.get_organizations()
+	printOrganizations(repsonse)
+	db.close()
 	# print "***TYPES***"
 	# print "***DICTIONARIES***"
 	# response = client.get_decision_types()
