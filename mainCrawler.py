@@ -115,7 +115,7 @@ def insertIntoDictionariesDetails(db,cursor,value,uid):
 	fields = ['uid','label','parent','dict']
 	SQLcommand = "insert into dictionary_item(dictionaryItem_id,label,parent_id,dictionary_id) VALUES (%s,%s,%s,%s)"
 	value['dict'] = uid
-	actuallInsertion(fields,SQLcommand,cursor,db)
+	actuallInsertion(fields,SQLcommand,cursor,db,value)
 	# cursor.execute(SQLcommand)
 	# db.commit()
 
@@ -148,7 +148,7 @@ def insertIntoDictionaries(db,cursor,value):
 	SQLcommand = "insert into dictionary(dictionary_id,label) VALUES (%s,%s)"
 	actuallInsertion(fields,SQLcommand,cursor,db)
 
-def actuallInsertion(fields,SQLcommand,cursor,db):
+def actuallInsertion(fields,SQLcommand,cursor,db,value):
 	sql_val = []
 	for field in fields:
 		try:
