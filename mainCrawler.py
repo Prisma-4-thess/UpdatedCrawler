@@ -153,11 +153,11 @@ def actuallInsertion(fields,SQLcommand,cursor,db,value):
 	for field in fields:
 		try:
 			if (value[field]==None):
-				sql_val.append("NULL")
+				sql_val.append(None)
 			else:
 				sql_val.append(value[field])
 		except:
-			sql_val.append("NULL")
+			sql_val.append(None)
 	print (SQLcommand,sql_val)
 	try:
 		cursor.execute(SQLcommand,sql_val)
@@ -291,13 +291,13 @@ def main(argv=None):
 	# print "***TYPES***"
 	# print "***DICTIONARIES***"
 	# response = client.get_decision_types()
-	response = client.get_dictionaries()
+	# response = client.get_dictionaries()
 	# response = client.get_organizations()
-	# response = client.get_positions()
+	response = client.get_positions()
 	# printTypes(response,client)
-	# printPositions(response)
+	printPositions(response)
 	# printOrganizations(response,client)
-	printAllDictionaries(response,client)
+	# printAllDictionaries(response,client)
 	# print (response);
 	
 	# printAllDictionaries(response)
