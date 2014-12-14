@@ -91,6 +91,8 @@ def printDictionaryDetails(client,uid):
 	client: OpendataClient instance
 	uid: The Dictionary's uid
 	'''
+	db = 1
+	cur = 2
 	response = client.get_dictionary(uid)
 	# print(response)
 	items = response["items"]
@@ -98,7 +100,32 @@ def printDictionaryDetails(client,uid):
 		for key in detail:
 			if (detail[key]!=None):
 				print '\t\t'+key+": "+detail[key]
+		insertIntoDictionariesDetails(db,cur,detail,uid)
 	# print (allDictionaries)
+
+def insertIntoDictionariesDetails(db,cursor,value,uid):
+	'''Insert dictionary details into MySQL db
+
+	Arguments
+	db: Connection to MySQL database
+	cursor: Cursor for the db
+	value: A dictionary for all values for one entry
+	'''
+	fields = ['uid','label','parent']
+	sql_val = ''
+	for field in fields:
+		try:
+			if (value[field]==None):
+				sql_val = sql_val + "NULL,"
+			else:
+				sql_val = sql_val + "\'"+value[field]+"\',"
+		except:
+			sql_val = sql_val + "NULL,"
+	sql_val = sql_val + "\'"+uid+"\',"
+	SQLcommand = "insert into dictionary_item(dictionaryItem_id,label,parent_id,dictionary_id) VALUES ("+sql_val[:-1]+")"
+	print SQLcommand
+	# cursor.execute(SQLcommand)
+	# db.commit()
 
 def printAllDictionaries (response,client):
 	'''Print all the dictionaries' labels
@@ -107,12 +134,37 @@ def printAllDictionaries (response,client):
 	response: a json response returned from OpendataClient 
 	client: OpendataClient instance
 	'''
+	db = 1
+	cur = 2
 	allDictionaries = response["dictionaries"]
 	for i in allDictionaries:
 		print "Dictionary: "+i['uid']
 		print '\t'+i["label"]
 		printDictionaryDetails(client,i['uid'])
+		insertIntoDictionaries(db,cur,i)
 
+def insertIntoDictionaries(db,cursor,value):
+	'''Insert dictionaries into MySQL db
+
+	Arguments
+	db: Connection to MySQL database
+	cursor: Cursor for the db
+	value: A dictionary for all values for one entry
+	'''
+	fields = ['uid','label']
+	sql_val = ''
+	for field in fields:
+		try:
+			if (value[field]==None):
+				sql_val = sql_val + "NULL,"
+			else:
+				sql_val = sql_val + "\'"+value[field]+"\',"
+		except:
+			sql_val = sql_val + "NULL,"
+	SQLcommand = "insert into dictionary(dictionary_id,label) VALUES ("+sql_val[:-1]+")"
+	print SQLcommand
+	# cursor.execute(SQLcommand)
+	# db.commit()
 
 
 # def printAllDecisionsPDF (response,filename):
@@ -249,13 +301,13 @@ def main(argv=None):
 	# print "***TYPES***"
 	# print "***DICTIONARIES***"
 	# response = client.get_decision_types()
-	# response = client.get_dictionaries()
+	response = client.get_dictionaries()
 	# response = client.get_organizations()
-	response = client.get_positions()
+	# response = client.get_positions()
 	# printTypes(response,client)
-	printPositions(response)
+	# printPositions(response)
 	# printOrganizations(response,client)
-	# printAllDictionaries(response,client)
+	printAllDictionaries(response,client)
 	# print (response);
 	
 	# printAllDictionaries(response)
