@@ -279,19 +279,19 @@ def insertIntoPositions(db,cursor,value):
 	value: A dictionary for all values for one entry
 	'''
 	fields = ['uid','label']
-	sql_val = ''
+	sql_val = []
+	SQLcommand = "insert into org_position(orgPosition_id,label) VALUES (%s,%s)"
 	for field in fields:
 		try:
 			if (value[field]==None):
-				sql_val = sql_val + "NULL,"
+				sql_val.append("NULL")
 			else:
-				sql_val = sql_val + "\'"+value[field].encode('utf-8')+"\',"
+				sql_val.append(value[field])
 		except:
-			sql_val = sql_val + "NULL,"
-	SQLcommand = "insert into org_position(orgPosition_id,label) VALUES ("+sql_val[:-1]+")"
-	print SQLcommand
+			sql_val.append("NULL")
+	# print (SQLcommand,sql_val)
 	try:
-		cursor.execute(SQLcommand)
+		cursor.execute(SQLcommand,sql_val)
 		db.commit()
 	except Exception as e:
 		print e
