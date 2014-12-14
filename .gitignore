@@ -52,3 +52,6 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Project Specific
+connection_string.py
