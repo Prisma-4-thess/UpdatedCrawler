@@ -280,7 +280,7 @@ def insertIntoPositions(db,cursor,value):
 	'''
 	fields = ['uid','label']
 	SQLcommand = "insert into org_position(orgPosition_id,label) VALUES (%s,%s)"
-	actuallInsertion(fields,SQLcommand,cursor,db)
+	actuallInsertion(fields,SQLcommand,cursor,db,value)
 
 
 
