@@ -132,8 +132,8 @@ def printAllDictionaries (response,client):
 	for i in allDictionaries:
 		print "Dictionary: "+i['uid']
 		print '\t'+i["label"]
-		printDictionaryDetails(client,i['uid'])
 		insertIntoDictionaries(db,cur,i)
+		printDictionaryDetails(client,i['uid'])
 	db.close()
 
 def insertIntoDictionaries(db,cursor,value):
@@ -223,19 +223,11 @@ def insertIntoOrganizations(db,cursor,value):
 	db: Connection to MySQL database
 	cursor: Cursor for the db
 	'''
-	fields = ['uid','abbreviation','fekNumber','fekYear','label','latinName','odeManagerEmail','status','vatNumber','website']
-	sql_val = ''
-	for field in fields:
-		try:
-			if (value[field]==None):
-				sql_val = sql_val + "NULL,"
-			else:
-				sql_val = sql_val + "\'"+value[field]+"\',"
-		except:
-			sql_val = sql_val + "NULL,"
+	fields = ['uid','abbreviation','category','fekIssue','fekNumber','fekYear','label','latinName','odeManagerEmail','status','supervisorId','vatNumber','website']
 	# SQLcommand = "insert into organization('organization_id','abbreviation','category_id','fek_issue_id','fek_number','fek_year','label','latin','ode_manager_email','status','supervisor_id','vat_number','website') VALUES ("+values+")"
-	SQLcommand = "insert into organization('organization_id','abbreviation','fek_number','fek_year','label','latin','ode_manager_email','status','vat_number','website') VALUES ("+sql_val[:-1]+")"
+	SQLcommand = "insert into organization('organization_id','abbreviation','category_id','fek_issue_id,'fek_number','fek_year','label','latin_name','ode_manager_email','status','supervisor_id,'vat_number','website') VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 	print SQLcommand
+	actuallInsertion(fields,SQLcommand,cursor,db,value)
 	# cursor.execute(SQLcommand)
 	# db.commit()
 
@@ -286,17 +278,17 @@ def insertIntoPositions(db,cursor,value):
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
-	# response = client.get_organizations()
-	# printOrganizations(response,client)
+	response = client.get_organizations()
+	printOrganizations(response,client)
 	# print "***TYPES***"
 	# print "***DICTIONARIES***"
 	# response = client.get_decision_types()
-	response = client.get_dictionaries()
-	printAllDictionaries(response,client)
+	# response = client.get_dictionaries()
+	# printAllDictionaries(response,client)
 	# response = client.get_organizations()
-	response = client.get_positions()
+	# response = client.get_positions()
 	# printTypes(response,client)
-	printPositions(response)
+	# printPositions(response)
 	# printOrganizations(response,client)
 	# print (response);
 	
