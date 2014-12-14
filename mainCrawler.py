@@ -289,8 +289,8 @@ def insertIntoPositions(db,cursor,value):
 			sql_val = sql_val + "NULL,"
 	SQLcommand = "insert into org_position(orgPosition_id,label) VALUES ("+sql_val[:-1]+")"
 	print SQLcommand
-	# cursor.execute(SQLcommand)
-	# db.commit()
+	cursor.execute(SQLcommand)
+	db.commit()
 
 
 
@@ -301,13 +301,13 @@ def main(argv=None):
 	# print "***TYPES***"
 	# print "***DICTIONARIES***"
 	# response = client.get_decision_types()
-	response = client.get_dictionaries()
+	# response = client.get_dictionaries()
 	# response = client.get_organizations()
-	# response = client.get_positions()
+	response = client.get_positions()
 	# printTypes(response,client)
-	# printPositions(response)
+	printPositions(response)
 	# printOrganizations(response,client)
-	printAllDictionaries(response,client)
+	# printAllDictionaries(response,client)
 	# print (response);
 	
 	# printAllDictionaries(response)
