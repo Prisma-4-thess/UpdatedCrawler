@@ -133,7 +133,7 @@ def printAllDictionaries (response,client):
 		print "Dictionary: "+i['uid']
 		print '\t'+i["label"]
 		printDictionaryDetails(client,i['uid'])
-		# insertIntoDictionaries(db,cur,i)
+		insertIntoDictionaries(db,cur,i)
 	db.close()
 
 def insertIntoDictionaries(db,cursor,value):
