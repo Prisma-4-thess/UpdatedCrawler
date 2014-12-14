@@ -6,6 +6,7 @@ import opendata
 import json
 import sys
 import MySQLdb
+import connection_string as con
 
 
 query_size = 500;
@@ -183,11 +184,13 @@ def printPositions (response):
 	positions = response["positions"]
 	for position in positions:
 		print "Position "+position["uid"]
-		print "\tLabel: "+position["label"]
-		
+		print "\tLabel: "+position["label"]		
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")
+	db = con.connectMySQL()
+	cur = db.cursor()
+	cur.execute("show create table ")
 	# print "***TYPES***"
 	# print "***DICTIONARIES***"
 	# response = client.get_decision_types()
