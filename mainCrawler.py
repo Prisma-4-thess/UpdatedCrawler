@@ -268,6 +268,7 @@ def printPositions (response):
 		print "Position "+position["uid"]
 		print "\tLabel: "+position["label"]		
 		insertIntoPositions(db,cur,position)
+	db.close()
 
 def insertIntoPositions(db,cursor,value):
 	'''Insert positions into MySQL db
