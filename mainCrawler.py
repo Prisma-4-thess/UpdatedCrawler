@@ -5,6 +5,7 @@ import requests
 import opendata
 import json
 import sys
+import MySQLdb
 
 
 query_size = 500;
@@ -191,11 +192,11 @@ def main(argv=None):
 	# print "***DICTIONARIES***"
 	# response = client.get_decision_types()
 	# response = client.get_dictionaries()
-	response = client.get_organizations()
+	# response = client.get_organizations()
 	# response = client.get_positions()
 	# printTypes(response,client)
 	# printPositions(response)
-	printOrganizations(response,client)
+	# printOrganizations(response,client)
 	# printAllDictionaries(response,client)
 	# print (response);
 	
