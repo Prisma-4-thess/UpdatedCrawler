@@ -146,7 +146,7 @@ def insertIntoDictionaries(db,cursor,value):
 	'''
 	fields = ['uid','label']
 	SQLcommand = "insert into dictionary(dictionary_id,label) VALUES (%s,%s)"
-	actuallInsertion(fields,SQLcommand,cursor,db)
+	actuallInsertion(fields,SQLcommand,cursor,db,value)
 
 def actuallInsertion(fields,SQLcommand,cursor,db,value):
 	sql_val = []
@@ -158,7 +158,7 @@ def actuallInsertion(fields,SQLcommand,cursor,db,value):
 				sql_val.append(value[field])
 		except:
 			sql_val.append("NULL")
-	# print (SQLcommand,sql_val)
+	print (SQLcommand,sql_val)
 	try:
 		cursor.execute(SQLcommand,sql_val)
 		db.commit()
