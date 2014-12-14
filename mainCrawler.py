@@ -284,13 +284,16 @@ def insertIntoPositions(db,cursor,value):
 			if (value[field]==None):
 				sql_val = sql_val + "NULL,"
 			else:
-				sql_val = sql_val + "\'"+value[field]+"\',"
+				sql_val = sql_val + "\'"+value[field].encode('utf-8')+"\',"
 		except:
 			sql_val = sql_val + "NULL,"
 	SQLcommand = "insert into org_position(orgPosition_id,label) VALUES ("+sql_val[:-1]+")"
 	print SQLcommand
-	cursor.execute(SQLcommand)
-	db.commit()
+	try:
+		cursor.execute(SQLcommand)
+		db.commit()
+	except Exception as e:
+		print e
 
 
 
