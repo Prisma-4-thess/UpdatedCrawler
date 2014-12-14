@@ -134,14 +134,15 @@ def printAllDictionaries (response,client):
 	response: a json response returned from OpendataClient 
 	client: OpendataClient instance
 	'''
-	db = 1
-	cur = 2
+	db = con.connectMySQL()
+	cur = db.cursor()
 	allDictionaries = response["dictionaries"]
 	for i in allDictionaries:
 		print "Dictionary: "+i['uid']
 		print '\t'+i["label"]
-		printDictionaryDetails(client,i['uid'])
+		# printDictionaryDetails(client,i['uid'])
 		insertIntoDictionaries(db,cur,i)
+	db.close()
 
 def insertIntoDictionaries(db,cursor,value):
 	'''Insert dictionaries into MySQL db
@@ -152,16 +153,22 @@ def insertIntoDictionaries(db,cursor,value):
 	value: A dictionary for all values for one entry
 	'''
 	fields = ['uid','label']
-	sql_val = ''
+	sql_val = []
+	SQLcommand = "insert into dictionary(dictionary_id,label) VALUES (%s,%s)"
 	for field in fields:
 		try:
 			if (value[field]==None):
-				sql_val = sql_val + "NULL,"
+				sql_val.append("NULL")
 			else:
-				sql_val = sql_val + "\'"+value[field]+"\',"
+				sql_val.append(value[field])
 		except:
-			sql_val = sql_val + "NULL,"
-	SQLcommand = "insert into dictionary(dictionary_id,label) VALUES ("+sql_val[:-1]+")"
+			sql_val.append("NULL")
+	# print (SQLcommand,sql_val)
+	try:
+		cursor.execute(SQLcommand,sql_val)
+		db.commit()
+	except Exception as e:
+		print e
 	print SQLcommand
 	# cursor.execute(SQLcommand)
 	# db.commit()
@@ -305,13 +312,13 @@ def main(argv=None):
 	# print "***TYPES***"
 	# print "***DICTIONARIES***"
 	# response = client.get_decision_types()
-	# response = client.get_dictionaries()
+	response = client.get_dictionaries()
 	# response = client.get_organizations()
-	response = client.get_positions()
+	# response = client.get_positions()
 	# printTypes(response,client)
-	printPositions(response)
+	# printPositions(response)
 	# printOrganizations(response,client)
-	# printAllDictionaries(response,client)
+	printAllDictionaries(response,client)
 	# print (response);
 	
 	# printAllDictionaries(response)
