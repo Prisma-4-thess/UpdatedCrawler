@@ -91,8 +91,8 @@ def printDictionaryDetails(client,uid):
 	client: OpendataClient instance
 	uid: The Dictionary's uid
 	'''
-	db = 1
-	cur = 2
+	db = con.connectMySQL()
+	cur = db.cursor()
 	response = client.get_dictionary(uid)
 	# print(response)
 	items = response["items"]
