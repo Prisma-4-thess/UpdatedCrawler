@@ -149,13 +149,13 @@ def insertIntoDictionaries(db,cursor,value):
 def actuallInsertion(fields,SQLcommand):
 	sql_val = []
 	for field in fields:
-	try:
-		if (value[field]==None):
+		try:
+			if (value[field]==None):
+				sql_val.append("NULL")
+			else:
+				sql_val.append(value[field])
+		except:
 			sql_val.append("NULL")
-		else:
-			sql_val.append(value[field])
-	except:
-		sql_val.append("NULL")
 	# print (SQLcommand,sql_val)
 	try:
 		cursor.execute(SQLcommand,sql_val)
