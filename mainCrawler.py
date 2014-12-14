@@ -149,25 +149,32 @@ def printOrganizations (response,client,updateSQL=False):
 	response: a json response returned from OpendataClient
 	client: OpendataClient instance
 	'''
+	db = con.connectMySQL()
+	cur = db.cursor()
 	organizations = response["organizations"]
 	for organization in organizations:
 		print "Organization "+organization["uid"]
+		valueSQL = ""
 		for key in organization:
 			# print organization[key]!=None
 			# print key
 			if (organization[key]!=None and key!='uid' and key!='organizationDomains'):
-				print "\t"+key+": "+organization[key]
-		printUnits(client,organization["uid"])
+				valueSQL = valueSQL +"\'" +organization[key] + "\',"
+				# print "\t"+key+": "+organization[key]
+		print valueSQL[:-1]
+		insertIntoOrganizations(db,cur,valueSQL[:-1])
+		# printUnits(client,organization["uid"])
 
-def insertIntoOrganizations(db,cursor):
+
+def insertIntoOrganizations(db,cursor,values):
 	'''Insert organizations into MySQL db
 
 	Arguments
 	db: Connection to MySQL database
 	cursor: Cursor for the db
 	'''
-	SQLcommand = "insert into organization(`organization_id`,`abbreviation`,`category_id`,`fek_issue_id`,`fek_number`,`fek_year`,`label`,`latin_name`,`ode_manager_email`,`status`,`supervisor_id`,`vat_number`,website`) VALUES "
-
+	SQLcommand = "insert into organization(`organization_id`,`abbreviation`,`category_id`,`fek_issue_id`,`fek_number`,`fek_year`,`label`,`latin_name`,`ode_manager_email`,`status`,`supervisor_id`,`vat_number`,website`) VALUES ("+values+")"
+	cursor.execute(SQLcommand)
 	db.commit()
 
 def printUnits(client,uid):
@@ -198,12 +205,9 @@ def printPositions (response):
 		print "\tLabel: "+position["label"]		
 
 def main(argv=None):
-	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")
-	db = con.connectMySQL()
-	cur = db.cursor()
+	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	response = client.get_organizations()
-	printOrganizations(repsonse)
-	db.close()
+	printOrganizations(response,client)
 	# print "***TYPES***"
 	# print "***DICTIONARIES***"
 	# response = client.get_decision_types()
