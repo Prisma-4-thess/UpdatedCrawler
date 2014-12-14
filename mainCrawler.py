@@ -113,7 +113,7 @@ def insertIntoDictionariesDetails(db,cursor,value,uid):
 	'''
 	fields = ['uid','label','parent']
 	SQLcommand = "insert into dictionary_item(dictionaryItem_id,label,parent_id,dictionary_id) VALUES (%s,%s,%s,%s)"
-	actuallInsertion(fields,SQLcommand)
+	actuallInsertion(fields,SQLcommand,cursor,db)
 	# cursor.execute(SQLcommand)
 	# db.commit()
 
@@ -144,9 +144,9 @@ def insertIntoDictionaries(db,cursor,value):
 	'''
 	fields = ['uid','label']
 	SQLcommand = "insert into dictionary(dictionary_id,label) VALUES (%s,%s)"
-	actuallInsertion(fields,SQLcommand)
+	actuallInsertion(fields,SQLcommand,cursor,db)
 
-def actuallInsertion(fields,SQLcommand):
+def actuallInsertion(fields,SQLcommand,cursor,db):
 	sql_val = []
 	for field in fields:
 		try:
@@ -278,7 +278,7 @@ def insertIntoPositions(db,cursor,value):
 	'''
 	fields = ['uid','label']
 	SQLcommand = "insert into org_position(orgPosition_id,label) VALUES (%s,%s)"
-	actuallInsertion(fields,SQLcommand)
+	actuallInsertion(fields,SQLcommand,cursor,db)
 
 
 
