@@ -112,18 +112,8 @@ def insertIntoDictionariesDetails(db,cursor,value,uid):
 	value: A dictionary for all values for one entry
 	'''
 	fields = ['uid','label','parent']
-	sql_val = ''
-	for field in fields:
-		try:
-			if (value[field]==None):
-				sql_val = sql_val + "NULL,"
-			else:
-				sql_val = sql_val + "\'"+value[field]+"\',"
-		except:
-			sql_val = sql_val + "NULL,"
-	sql_val = sql_val + "\'"+uid+"\',"
-	SQLcommand = "insert into dictionary_item(dictionaryItem_id,label,parent_id,dictionary_id) VALUES ("+sql_val[:-1]+")"
-	print SQLcommand
+	SQLcommand = "insert into dictionary_item(dictionaryItem_id,label,parent_id,dictionary_id) VALUES (%s,%s,%s,%s)"
+	actuallInsertion(fields,SQLcommand)
 	# cursor.execute(SQLcommand)
 	# db.commit()
 
@@ -140,8 +130,8 @@ def printAllDictionaries (response,client):
 	for i in allDictionaries:
 		print "Dictionary: "+i['uid']
 		print '\t'+i["label"]
-		# printDictionaryDetails(client,i['uid'])
-		insertIntoDictionaries(db,cur,i)
+		printDictionaryDetails(client,i['uid'])
+		# insertIntoDictionaries(db,cur,i)
 	db.close()
 
 def insertIntoDictionaries(db,cursor,value):
@@ -153,16 +143,19 @@ def insertIntoDictionaries(db,cursor,value):
 	value: A dictionary for all values for one entry
 	'''
 	fields = ['uid','label']
-	sql_val = []
 	SQLcommand = "insert into dictionary(dictionary_id,label) VALUES (%s,%s)"
+	actuallInsertion(fields,SQLcommand)
+
+def actuallInsertion(fields,SQLcommand):
+	sql_val = []
 	for field in fields:
-		try:
-			if (value[field]==None):
-				sql_val.append("NULL")
-			else:
-				sql_val.append(value[field])
-		except:
+	try:
+		if (value[field]==None):
 			sql_val.append("NULL")
+		else:
+			sql_val.append(value[field])
+	except:
+		sql_val.append("NULL")
 	# print (SQLcommand,sql_val)
 	try:
 		cursor.execute(SQLcommand,sql_val)
@@ -170,8 +163,6 @@ def insertIntoDictionaries(db,cursor,value):
 	except Exception as e:
 		print e
 	print SQLcommand
-	# cursor.execute(SQLcommand)
-	# db.commit()
 
 
 # def printAllDecisionsPDF (response,filename):
@@ -286,22 +277,8 @@ def insertIntoPositions(db,cursor,value):
 	value: A dictionary for all values for one entry
 	'''
 	fields = ['uid','label']
-	sql_val = []
 	SQLcommand = "insert into org_position(orgPosition_id,label) VALUES (%s,%s)"
-	for field in fields:
-		try:
-			if (value[field]==None):
-				sql_val.append("NULL")
-			else:
-				sql_val.append(value[field])
-		except:
-			sql_val.append("NULL")
-	# print (SQLcommand,sql_val)
-	try:
-		cursor.execute(SQLcommand,sql_val)
-		db.commit()
-	except Exception as e:
-		print e
+	actuallInsertion(fields,SQLcommand)
 
 
 
