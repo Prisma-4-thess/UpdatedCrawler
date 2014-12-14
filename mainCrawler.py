@@ -100,6 +100,7 @@ def printDictionaryDetails(client,uid):
 		for key in detail:
 			if (detail[key]!=None):
 				print '\t\t'+key+": "+detail[key]
+
 		insertIntoDictionariesDetails(db,cur,detail,uid)
 	# print (allDictionaries)
 
@@ -111,8 +112,9 @@ def insertIntoDictionariesDetails(db,cursor,value,uid):
 	cursor: Cursor for the db
 	value: A dictionary for all values for one entry
 	'''
-	fields = ['uid','label','parent']
+	fields = ['uid','label','parent','dict']
 	SQLcommand = "insert into dictionary_item(dictionaryItem_id,label,parent_id,dictionary_id) VALUES (%s,%s,%s,%s)"
+	value['dict'] = uid
 	actuallInsertion(fields,SQLcommand,cursor,db)
 	# cursor.execute(SQLcommand)
 	# db.commit()
