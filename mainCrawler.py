@@ -7,6 +7,7 @@ import json
 import sys
 import MySQLdb
 import connection_string as con
+import xml.etree.cElementTree as ET
 
 
 query_size = 500;
@@ -326,6 +327,54 @@ def insertIntoPositions(db,cursor,value):
 	actuallInsertion(fields,SQLcommand,cursor,db,value)
 
 
+def getGEO(csr):
+	query = (
+		 "INSERT INTO geo"
+		 "(version,address,dimos,latitude,longitude,namegrk,new_cat,new_sub_cat,phone,tk)"
+		 "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")  
+
+	tree = ET.ElementTree(file='poi_thessalonikis.kml')
+	root = tree.getroot()
+	child = root[0]
+	print child
+	folder=child[0]
+	for member in folder:
+		if member.tag == 'Placemark':
+			#Structure if each Placemark Element
+			name=member[0]
+			ext_data=member[1]
+			schemadata=ext_data[0]
+			dimos = u'\u0394\u03ae\u03bc\u03bf\u03c2 \u0398\u03b5\u03c3\u03c3\u03b1\u03bb\u03bf\u03bd\u03af\u03ba\u03b7\u03c2'
+			address = point_x = point_y = namegrk = newcat = newsubcat = phone = tk = None
+			for parts in schemadata:
+				if parts.attrib['name'] == 'tk':
+					tk=parts.text
+				if parts.attrib['name'] == 'newcat':
+					newcat=parts.text
+				if parts.attrib['name'] == 'phone':
+					phone=parts.text
+					if phone is "0":
+						phone = None
+				if parts.attrib['name'] == 'address':
+					address=parts.text
+				if parts.attrib['name'] == 'newsubcat':
+					newsubcat=parts.text
+				if parts.attrib['name'] == 'namegrk':
+					namegrk=parts.text
+			point=member[2]
+			coord=point[0]
+			coordstr=coord.text.split(',',2)
+			coordX=coordstr[1]
+			coordY=coordstr[0]
+			data = (1,address,dimos,coordX,coordY,namegrk,newcat,newsubcat,phone,tk)
+			# for temp in data:
+			#   print (temp)
+			try:
+				csr.execute(query,data)
+			except Exception, e:
+				print (str(e))
+
+
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
@@ -341,6 +390,12 @@ def main(argv=None):
 	print "***TYPES***"
 	response = client.get_decision_types()
 	printTypes(response,client)
+	print "***GEO***"
+	db = con.connectMySQL()
+	cur = db.cursor()
+	getGEO(cur)
+	db.commit()
+	db.close()
 	# printAllDictionaries(response,client)
 	# response = client.get_organizations()
 	

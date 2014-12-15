@@ -55,3 +55,4 @@ target/
 
 # Project Specific
 connection_string.py
+*.kml
