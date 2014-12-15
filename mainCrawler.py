@@ -374,7 +374,39 @@ def getGEO(csr):
 			except Exception, e:
 				print (str(e))
 
+def printSigners(response,uid):
+	'''Print signers for a specific organization
 
+	Arguments:
+	client: OpendataClient instance
+	uid: The organization's uid
+	'''
+	db = con.connectMySQL()
+	cur = db.cursor()
+	signers = response['signers']
+	for signer in signers:
+		# print "\t\tSigner "+signer['uid']
+		# for detail in signer:
+		# 	print "\t\t\t"+detail+': ',
+		# 	print signer[detail]
+		insertIntoSigners(db,cur,signer,uid)
+	db.commit()
+	db.close()
+	# db.commit()
+
+def insertIntoSigners(db,cur,value,uid):
+	'''Insert signers into MySQL db
+
+	Arguments
+	db: Connection to MySQL database
+	cursor: Cursor for the db
+	value: A dictionary for all values for one entry
+	uid: The uid of the organization
+	'''
+	fields = ['uid','active','activeFrom','activeUntil','firstName','hasOrganizationSignRights','lastName','myOrgId']
+	SQLcommand = "insert into signer(signer_id,active,active_from,active_until,first_name,has_organization_sign_rights,last_name,org_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+	value['myOrgId'] = uid
+	actuallInsertion(fields,SQLcommand,cursor,db,value)
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
@@ -396,6 +428,9 @@ def main(argv=None):
 	getGEO(cur)
 	db.commit()
 	db.close()
+	print '***SIGNERS***'
+	response = client.get_organization_signers('6114')
+	printSigners(response,'6114')
 	# printAllDictionaries(response,client)
 	# response = client.get_organizations()
 	
