@@ -57,7 +57,7 @@ def insertIntoTypes(db,cursor,value):
 	cursor: Cursor for the db
 	value: A dictionary for all values for one entry
 	'''
-	fields = ['uid','label','parent','allowedInDecision']
+	fields = ['uid','label','parent','allowedInDecisions']
 	SQLcommand = "insert into type(type_id,label,parent_id,allowed_in_decision) VALUES (%s,%s,%s,%s)"
 	actuallInsertion(fields,SQLcommand,cursor,db,value)
 	# cursor.execute(SQLcommand)
@@ -176,7 +176,7 @@ def actuallInsertion(fields,SQLcommand,cursor,db,value):
 				sql_val.append(value[field])
 		except:
 			sql_val.append(None)
-	# print (SQLcommand,sql_val)
+	print (SQLcommand,sql_val)
 	try:
 		cursor.execute(SQLcommand,sql_val)
 	except Exception as e:
