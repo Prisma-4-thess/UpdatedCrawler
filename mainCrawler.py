@@ -238,14 +238,30 @@ def printUnits(client,uid):
 	client: OpendataClient instance
 	uid: The organization's uid
 	'''
+	db = con.connectMySQL()
+	cur = db.cursor()
 	units = client.get_organization_units(uid)['units']
 	for unit in units:
 		print "\t\tUnit "+unit['uid']
 		for detail in unit:
 			print "\t\t\t"+detail+': ',
 			print unit[detail]
+		insertIntoUnits(db,cursor,unit)
 	# for unit in units:
 		# print unit
+		
+def insertIntoUnits(db,cursor,value,uid):
+	'''Insert units into MySQL db
+
+	Arguments
+	db: Connection to MySQL database
+	cursor: Cursor for the db
+	value: A dictionary for all values for one entry
+	'''
+	fields = ['uid','label','category','active','myParentId','abbreviation']
+	SQLcommand = "insert into units(unit_id,label,category_id,active,parent_id,abbreviation) VALUES (%s,%s,%s,%s,%s,%s)"
+	value['myParentId']=uid
+	actuallInsertion(fields,SQLcommand,cursor,db,value)
 
 def printPositions (response):
 	'''Return all positions from diavgeia
