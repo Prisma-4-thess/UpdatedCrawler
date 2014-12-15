@@ -212,7 +212,7 @@ def printOrganizations (response,client,updateSQL=False):
 			# if (organization[key]!=None and key!='uid' and key!='organizationDomains'):
 				# print "\t"+key+": "+organization[key]
 		insertIntoOrganizations(db,cur,organization)
-		# printUnits(client,organization["uid"])
+		printUnits(client,organization["uid"])
 	db.close()
 
 
