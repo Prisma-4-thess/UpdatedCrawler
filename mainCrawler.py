@@ -105,7 +105,6 @@ def printTypesDetails(client,uid,uid_database,db,cur):
 				print extrafield[details]
 	if (response['parent']!=None): print '\t\tParent: '+response['parent']
 	db.commit()
-	print (allDictionaries)
 
 def insertIntoTypesDetails(db,cursor,value,uid):
 	'''Insert extrafields into MySQL db
