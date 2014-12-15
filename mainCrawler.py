@@ -34,6 +34,8 @@ def printTypes (response,client):
 	Arguments:
 	response: a json response returned from OpendataClient 
 	'''
+	db = con.connectMySQL()
+	cur = db.cursor()
 	d_types = response["decisionTypes"]
 	for d_type in d_types:
 		print "Type: "+d_type['uid']
@@ -42,7 +44,24 @@ def printTypes (response,client):
 				print "\t"+key+": "+str(d_type[key])
 			elif (d_type[key]!=None and key!='uid'):
 				print "\t"+key+": "+d_type[key]
-		printTypesDetails(client,d_type['uid'].encode('utf-8'))
+		# printTypesDetails(client,d_type['uid'].encode('utf-8'))
+		insertIntoTypes(db,cur,d_type)
+	db.commit()
+	db.close()
+
+def insertIntoTypes(db,cursor,value):
+	'''Insert types into MySQL db
+
+	Arguments
+	db: Connection to MySQL database
+	cursor: Cursor for the db
+	value: A dictionary for all values for one entry
+	'''
+	fields = ['uid','label','parent','allowedInDecision']
+	SQLcommand = "insert into type(type_id,label,parent_id,allowed_in_decision) VALUES (%s,%s,%s,%s)"
+	actuallInsertion(fields,SQLcommand,cursor,db,value)
+	# cursor.execute(SQLcommand)
+	# db.commit()
 
 def printTypesDetails(client,uid):
 	'''Print details for a specific dictionary
@@ -293,18 +312,18 @@ def insertIntoPositions(db,cursor,value):
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
-	# print "***TYPES***"
 	# print "***DICTIONARIES***"
 	# response = client.get_dictionaries()
 	# printAllDictionaries(response,client)
 	# print "***POSITIONS***"
 	# response = client.get_positions()
 	# printPositions(response)
-	print "***ORGANIZATIONS***"
-	response = client.get_organizations(status='all')
-	printOrganizations(response,client)
-	# response = client.get_decision_types()
-	
+	# print "***ORGANIZATIONS***"
+	# response = client.get_organizations(status='all')
+	# printOrganizations(response,client)
+	print "***TYPES***"
+	response = client.get_decision_types()
+	printTypes(response,client)
 	# printAllDictionaries(response,client)
 	# response = client.get_organizations()
 	
