@@ -394,7 +394,7 @@ def printSigners(response,uid):
 	db.close()
 	# db.commit()
 
-def insertIntoSigners(db,cur,value,uid):
+def insertIntoSigners(db,cursor,value,uid):
 	'''Insert signers into MySQL db
 
 	Arguments
