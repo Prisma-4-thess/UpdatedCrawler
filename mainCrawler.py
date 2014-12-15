@@ -246,7 +246,7 @@ def printUnits(client,uid):
 		for detail in unit:
 			print "\t\t\t"+detail+': ',
 			print unit[detail]
-		insertIntoUnits(db,cursor,unit)
+		insertIntoUnits(db,cur,unit)
 	# for unit in units:
 		# print unit
 		
