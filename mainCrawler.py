@@ -44,8 +44,8 @@ def printTypes (response,client):
 				print "\t"+key+": "+str(d_type[key])
 			elif (d_type[key]!=None and key!='uid'):
 				print "\t"+key+": "+d_type[key]
-		# printTypesDetails(client,d_type['uid'].encode('utf-8'))
-		insertIntoTypes(db,cur,d_type)
+		printTypesDetails(client,d_type['uid'].encode('utf-8'),d_type['uid'],db,cur)
+		# insertIntoTypes(db,cur,d_type)
 	db.commit()
 	db.close()
 
@@ -63,7 +63,7 @@ def insertIntoTypes(db,cursor,value):
 	# cursor.execute(SQLcommand)
 	# db.commit()
 
-def printTypesDetails(client,uid):
+def printTypesDetails(client,uid,uid_database,db,cur):
 	'''Print details for a specific dictionary
 
 	Arguments:
@@ -76,6 +76,7 @@ def printTypesDetails(client,uid):
 	# wait = raw_input("PRESS TO CONTINUE...")
 	for extrafield in response['extraFields']:
 		print '\t\t\t'+extrafield['uid']
+		insertIntoTypesDetails(db,cur,extrafield,uid_database)
 		for details in extrafield:
 			print '\t\t\t\t'+details+': ',
 			if (details=='fixedValueList' and extrafield[details]!=None):
@@ -85,6 +86,7 @@ def printTypesDetails(client,uid):
 			elif(details=='nestedFields' and extrafield[details]!=None):
 				print (' ')
 				for field in extrafield[details]:
+					insertIntoTypesDetails(db,cur,field,uid_database)
 					print '\t\t\t\t\t'+field['uid']
 					for nested_detail in field:
 						if (nested_detail!='uid' and nested_detail!='nestedFields'):
@@ -94,6 +96,7 @@ def printTypesDetails(client,uid):
 							print (' ')
 							for field2 in field[nested_detail]:
 								print '\t\t\t\t\t\t\t'+field2['uid']
+								insertIntoTypesDetails(db,cur,field2,uid_database)
 								for nested_detail2 in field2:
 									if (nested_detail2!='uid'):
 										print '\t\t\t\t\t\t\t\t'+nested_detail2+': ',
@@ -101,7 +104,22 @@ def printTypesDetails(client,uid):
 			else: 
 				print extrafield[details]
 	if (response['parent']!=None): print '\t\tParent: '+response['parent']
-	# print (allDictionaries)
+	db.commit()
+	print (allDictionaries)
+
+def insertIntoTypesDetails(db,cursor,value,uid):
+	'''Insert extrafields into MySQL db
+
+	Arguments
+	db: Connection to MySQL database
+	cursor: Cursor for the db
+	value: A dictionary for all values for one entry
+	'''
+	fields = ['uid','dictionary','help','label','maxLength','relAdaConstrainedInOrganization','searchTerm','type','validation']
+	SQLcommand = "insert into extra_field(extraField_id,dictionary,help,label,max_length,rel_ada_constrained_in_organization,search_term,type,validation) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+	actuallInsertion(fields,SQLcommand,cursor,db,value)
+	# cursor.execute(SQLcommand)
+	# db.commit()
 
 def printDictionaryDetails(client,uid,db,cur):
 	'''Print details for a specific dictionary
