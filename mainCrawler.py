@@ -84,15 +84,13 @@ def printTypesDetails(client,uid):
 	if (response['parent']!=None): print '\t\tParent: '+response['parent']
 	# print (allDictionaries)
 
-def printDictionaryDetails(client,uid):
+def printDictionaryDetails(client,uid,db,cur):
 	'''Print details for a specific dictionary
 
 	Arguments:
 	client: OpendataClient instance
 	uid: The Dictionary's uid
 	'''
-	db = con.connectMySQL()
-	cur = db.cursor()
 	response = client.get_dictionary(uid)
 	# print(response)
 	items = response["items"]
@@ -133,7 +131,8 @@ def printAllDictionaries (response,client):
 		print "Dictionary: "+i['uid']
 		print '\t'+i["label"]
 		insertIntoDictionaries(db,cur,i)
-		printDictionaryDetails(client,i['uid'])
+		printDictionaryDetails(client,i['uid'],db,cur)
+	db.commit()
 	db.close()
 
 def insertIntoDictionaries(db,cursor,value):
@@ -161,7 +160,6 @@ def actuallInsertion(fields,SQLcommand,cursor,db,value):
 	print (SQLcommand,sql_val)
 	try:
 		cursor.execute(SQLcommand,sql_val)
-		db.commit()
 	except Exception as e:
 		print e
 	print SQLcommand
@@ -212,7 +210,8 @@ def printOrganizations (response,client,updateSQL=False):
 			# if (organization[key]!=None and key!='uid' and key!='organizationDomains'):
 				# print "\t"+key+": "+organization[key]
 		insertIntoOrganizations(db,cur,organization)
-		printUnits(client,organization["uid"])
+		printUnits(client,organization["uid"],db,cur)
+	db.commit()
 	db.close()
 
 
@@ -231,15 +230,13 @@ def insertIntoOrganizations(db,cursor,value):
 	# cursor.execute(SQLcommand)
 	# db.commit()
 
-def printUnits(client,uid):
+def printUnits(client,uid,db,cur):
 	'''Print units for a specific organization
 
 	Arguments:
 	client: OpendataClient instance
 	uid: The organization's uid
 	'''
-	db = con.connectMySQL()
-	cur = db.cursor()
 	units = client.get_organization_units(uid)['units']
 	for unit in units:
 		print "\t\tUnit "+unit['uid']
@@ -276,6 +273,7 @@ def printPositions (response):
 		print "Position "+position["uid"]
 		print "\tLabel: "+position["label"]		
 		insertIntoPositions(db,cur,position)
+	db.commit()
 	db.close()
 
 def insertIntoPositions(db,cursor,value):
@@ -294,21 +292,24 @@ def insertIntoPositions(db,cursor,value):
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
+	# print "***TYPES***"
+	print "***DICTIONARIES***"
+	response = client.get_dictionaries()
+	printAllDictionaries(response)
+	print "***POSITIONS***"
+	response = client.get_positions()
+	printPositions(response)
+	print "***ORGANIZATIONS***"
 	response = client.get_organizations()
 	printOrganizations(response,client)
-	# print "***TYPES***"
-	# print "***DICTIONARIES***"
 	# response = client.get_decision_types()
-	# response = client.get_dictionaries()
+	
 	# printAllDictionaries(response,client)
 	# response = client.get_organizations()
-	# response = client.get_positions()
+	
 	# printTypes(response,client)
-	# printPositions(response)
 	# printOrganizations(response,client)
 	# print (response);
-	
-	# printAllDictionaries(response)
 	# content = [line.strip() for line in open('organizationsPeriferia')]
 	# for organization in content:
 	# 	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:"+organization+")"
