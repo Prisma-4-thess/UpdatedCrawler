@@ -44,8 +44,8 @@ def printTypes (response,client):
 				print "\t"+key+": "+str(d_type[key])
 			elif (d_type[key]!=None and key!='uid'):
 				print "\t"+key+": "+d_type[key]
+		insertIntoTypes(db,cur,d_type)
 		printTypesDetails(client,d_type['uid'].encode('utf-8'),d_type['uid'],db,cur)
-		# insertIntoTypes(db,cur,d_type)
 	db.commit()
 	db.close()
 
@@ -230,7 +230,7 @@ def printInfo (response):
 		if (i==u'total'):
 			return info[i]
 
-def printOrganizations (response,client,updateSQL=False):
+def printOrganizations (response,client):
 	'''Return all organizations from diavgeia
 
 	Arguments
@@ -247,7 +247,7 @@ def printOrganizations (response,client,updateSQL=False):
 			# print key
 			# if (organization[key]!=None and key!='uid' and key!='organizationDomains'):
 				# print "\t"+key+": "+organization[key]
-		# insertIntoOrganizations(db,cur,organization)
+		insertIntoOrganizations(db,cur,organization)
 		printUnits(client,organization["uid"],db,cur)
 	db.commit()
 	db.close()
@@ -329,15 +329,15 @@ def insertIntoPositions(db,cursor,value):
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
-	# print "***DICTIONARIES***"
-	# response = client.get_dictionaries()
-	# printAllDictionaries(response,client)
-	# print "***POSITIONS***"
-	# response = client.get_positions()
-	# printPositions(response)
-	# print "***ORGANIZATIONS***"
-	# response = client.get_organizations(status='all')
-	# printOrganizations(response,client)
+	print "***DICTIONARIES***"
+	response = client.get_dictionaries()
+	printAllDictionaries(response,client)
+	print "***POSITIONS***"
+	response = client.get_positions()
+	printPositions(response)
+	print "***ORGANIZATIONS***"
+	response = client.get_organizations(status='all')
+	printOrganizations(response,client)
 	print "***TYPES***"
 	response = client.get_decision_types()
 	printTypes(response,client)
