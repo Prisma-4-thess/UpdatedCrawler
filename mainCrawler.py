@@ -95,9 +95,9 @@ def printDictionaryDetails(client,uid,db,cur):
 	# print(response)
 	items = response["items"]
 	for detail in items:
-		for key in detail:
-			if (detail[key]!=None):
-				print '\t\t'+key+": "+detail[key]
+		# for key in detail:
+		# 	if (detail[key]!=None):
+		# 		print '\t\t'+key+": "+detail[key]
 
 		insertIntoDictionariesDetails(db,cur,detail,uid)
 	# print (allDictionaries)
@@ -129,7 +129,7 @@ def printAllDictionaries (response,client):
 	allDictionaries = response["dictionaries"]
 	for i in allDictionaries:
 		print "Dictionary: "+i['uid']
-		print '\t'+i["label"]
+		# print '\t'+i["label"]
 		insertIntoDictionaries(db,cur,i)
 		printDictionaryDetails(client,i['uid'],db,cur)
 	db.commit()
@@ -157,12 +157,14 @@ def actuallInsertion(fields,SQLcommand,cursor,db,value):
 				sql_val.append(value[field])
 		except:
 			sql_val.append(None)
-	print (SQLcommand,sql_val)
+	# print (SQLcommand,sql_val)
 	try:
 		cursor.execute(SQLcommand,sql_val)
 	except Exception as e:
+		print 
+		print (SQLcommand,sql_val)
 		print e
-	print SQLcommand
+	# print SQLcommand
 
 
 # def printAllDecisionsPDF (response,filename):
@@ -209,7 +211,7 @@ def printOrganizations (response,client,updateSQL=False):
 			# print key
 			# if (organization[key]!=None and key!='uid' and key!='organizationDomains'):
 				# print "\t"+key+": "+organization[key]
-		insertIntoOrganizations(db,cur,organization)
+		# insertIntoOrganizations(db,cur,organization)
 		printUnits(client,organization["uid"],db,cur)
 	db.commit()
 	db.close()
@@ -225,7 +227,7 @@ def insertIntoOrganizations(db,cursor,value):
 	fields = ['uid','abbreviation','category','fekIssue','fekNumber','fekYear','label','latinName','odeManagerEmail','status','supervisorId','vatNumber','website']
 	# SQLcommand = "insert into organization('organization_id','abbreviation','category_id','fek_issue_id','fek_number','fek_year','label','latin','ode_manager_email','status','supervisor_id','vat_number','website') VALUES ("+values+")"
 	SQLcommand = "insert into organization(organization_id,abbreviation,category_id,fek_issue_id,fek_number,fek_year,label,latin_name,ode_manager_email,status,supervisor_id,vat_number,website) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-	print SQLcommand
+	# print SQLcommand
 	actuallInsertion(fields,SQLcommand,cursor,db,value)
 	# cursor.execute(SQLcommand)
 	# db.commit()
@@ -239,13 +241,12 @@ def printUnits(client,uid,db,cur):
 	'''
 	units = client.get_organization_units(uid)['units']
 	for unit in units:
-		print "\t\tUnit "+unit['uid']
-		for detail in unit:
-			print "\t\t\t"+detail+': ',
-			print unit[detail]
+		# print "\t\tUnit "+unit['uid']
+		#for detail in unit:
+		#	print "\t\t\t"+detail+': ',
+		#	print unit[detail]
 		insertIntoUnits(db,cur,unit,uid)
-	# for unit in units:
-		# print unit
+	db.commit()
 		
 def insertIntoUnits(db,cursor,value,uid):
 	'''Insert units into MySQL db
@@ -256,7 +257,7 @@ def insertIntoUnits(db,cursor,value,uid):
 	value: A dictionary for all values for one entry
 	'''
 	fields = ['uid','label','category','active','myParentId','abbreviation']
-	SQLcommand = "insert into units(unit_id,label,category_id,active,parent_id,abbreviation) VALUES (%s,%s,%s,%s,%s,%s)"
+	SQLcommand = "insert into unit(unit_id,label,category_id,active,parent_id,abbreviation) VALUES (%s,%s,%s,%s,%s,%s)"
 	value['myParentId']=uid
 	actuallInsertion(fields,SQLcommand,cursor,db,value)
 
@@ -293,14 +294,14 @@ def insertIntoPositions(db,cursor,value):
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	# print "***TYPES***"
-	print "***DICTIONARIES***"
-	response = client.get_dictionaries()
-	printAllDictionaries(response,client)
-	print "***POSITIONS***"
-	response = client.get_positions()
-	printPositions(response)
+	# print "***DICTIONARIES***"
+	# response = client.get_dictionaries()
+	# printAllDictionaries(response,client)
+	# print "***POSITIONS***"
+	# response = client.get_positions()
+	# printPositions(response)
 	print "***ORGANIZATIONS***"
-	response = client.get_organizations()
+	response = client.get_organizations(status='all')
 	printOrganizations(response,client)
 	# response = client.get_decision_types()
 	
