@@ -295,7 +295,7 @@ def main(argv=None):
 	# print "***TYPES***"
 	print "***DICTIONARIES***"
 	response = client.get_dictionaries()
-	printAllDictionaries(response)
+	printAllDictionaries(response,client)
 	print "***POSITIONS***"
 	response = client.get_positions()
 	printPositions(response)
