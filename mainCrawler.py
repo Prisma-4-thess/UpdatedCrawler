@@ -104,7 +104,7 @@ def printTypesDetails(client,uid,uid_database,db,cur):
 									if (nested_detail2!='uid'):
 										print '\t\t\t\t\t\t\t\t'+nested_detail2+': ',
 										print field2[nested_detail2]
-					if not enter2 insertIntoTypesDetails(db,cur,field,uid_database)
+					if not enter2: insertIntoTypesDetails(db,cur,field,uid_database)
 			else: 
 				print extrafield[details]
 		if not enter1: insertIntoTypesDetails(db,cur,extrafield,uid_database)
