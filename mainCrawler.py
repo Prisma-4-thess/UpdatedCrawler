@@ -64,52 +64,76 @@ def insertIntoTypes(db,cursor,value):
 	# cursor.execute(SQLcommand)
 	# db.commit()
 
-def printTypesDetails(client,uid,uid_database,db,cur):
+# def printTypesDetails_old(client,uid,uid_database,db,cur):
+# 	'''Print details for a specific dictionary
+
+# 	Arguments:
+# 	client: OpendataClient instance
+# 	uid: The Dictionary's uid
+# 	'''
+# 	response = client.get_decision_type_details(uid)
+# 	# print(response)
+# 	print '\t\tExtraFields:'
+# 	# wait = raw_input("PRESS TO CONTINUE...")
+# 	for extrafield in response['extraFields']:
+# 		print '\t\t\t'+extrafield['uid']
+# 		enter1 = False
+# 		for details in extrafield:
+# 			print '\t\t\t\t'+details+': ',
+# 			if (details=='fixedValueList' and extrafield[details]!=None):
+# 				print (' ')
+# 				for field in extrafield[details]:
+# 					print '\t\t\t\t\t'+field
+# 			elif(details=='nestedFields' and extrafield[details]!=None):
+# 				print (' ')
+# 				enter1 = True
+# 				for field in extrafield[details]:
+# 					enter2 = False
+# 					print '\t\t\t\t\t'+field['uid']
+# 					for nested_detail in field:
+# 						if (nested_detail!='uid' and nested_detail!='nestedFields'):
+# 							print '\t\t\t\t\t\t'+nested_detail+': ',
+# 							print field[nested_detail]
+# 						if(nested_detail=='nestedFields' and field[nested_detail]!=None):
+# 							enter2 = True
+# 							print (' ')
+# 							for field2 in field[nested_detail]:
+# 								print '\t\t\t\t\t\t\t'+field2['uid']
+# 								insertIntoTypesDetails(db,cur,field2,uid_database)
+# 								for nested_detail2 in field2:
+# 									if (nested_detail2!='uid'):
+# 										print '\t\t\t\t\t\t\t\t'+nested_detail2+': ',
+# 										print field2[nested_detail2]
+# 					if not enter2: insertIntoTypesDetails(db,cur,field,uid_database)
+# 			else: 
+# 				print extrafield[details]
+# 		if not enter1: insertIntoTypesDetails(db,cur,extrafield,uid_database)
+# 	if (response['parent']!=None): print '\t\tParent: '+response['parent']
+# 	# db.commit()
+
+def printTypesDetails(client,uid_temp,uid,db,cur):
 	'''Print details for a specific dictionary
 
 	Arguments:
 	client: OpendataClient instance
 	uid: The Dictionary's uid
 	'''
-	response = client.get_decision_type_details(uid)
-	# print(response)
-	print '\t\tExtraFields:'
-	# wait = raw_input("PRESS TO CONTINUE...")
-	for extrafield in response['extraFields']:
-		print '\t\t\t'+extrafield['uid']
-		enter1 = False
-		for details in extrafield:
-			print '\t\t\t\t'+details+': ',
-			if (details=='fixedValueList' and extrafield[details]!=None):
-				print (' ')
-				for field in extrafield[details]:
-					print '\t\t\t\t\t'+field
-			elif(details=='nestedFields' and extrafield[details]!=None):
-				print (' ')
-				enter1 = True
-				for field in extrafield[details]:
-					enter2 = False
-					print '\t\t\t\t\t'+field['uid']
-					for nested_detail in field:
-						if (nested_detail!='uid' and nested_detail!='nestedFields'):
-							print '\t\t\t\t\t\t'+nested_detail+': ',
-							print field[nested_detail]
-						if(nested_detail=='nestedFields' and field[nested_detail]!=None):
-							enter2 = True
-							print (' ')
-							for field2 in field[nested_detail]:
-								print '\t\t\t\t\t\t\t'+field2['uid']
-								insertIntoTypesDetails(db,cur,field2,uid_database)
-								for nested_detail2 in field2:
-									if (nested_detail2!='uid'):
-										print '\t\t\t\t\t\t\t\t'+nested_detail2+': ',
-										print field2[nested_detail2]
-					if not enter2: insertIntoTypesDetails(db,cur,field,uid_database)
-			else: 
-				print extrafield[details]
-		if not enter1: insertIntoTypesDetails(db,cur,extrafield,uid_database)
-	if (response['parent']!=None): print '\t\tParent: '+response['parent']
+	response = client.get_decision_type_details(uid_temp)
+	extraFields = response['extraFields']
+	recursiveExtraFields(db,cur,'',extraFields,uid)
 	db.commit()
+		
+
+def recursiveExtraFields(db,cursor,newu,extraFields,parent_id):
+	for extraField in extraFields:
+		# print (extraField['uid'])
+		# print (extraField['nestedFields'])
+		if not extraField['nestedFields']:
+			print(newu+extraField['uid'])
+			extraField['uid'] = newu+extraField['uid']
+			insertIntoTypesDetails(db,cursor,extraField,parent_id)
+		else:
+			recursiveExtraFields(db,cursor,newu+extraField['uid']+'-',extraField['nestedFields'],parent_id)
 
 def insertIntoTypesDetails(db,cursor,value,uid):
 	'''Insert extrafields into MySQL db
@@ -414,9 +438,9 @@ def insertIntoSigners(db,cursor,value,uid):
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
-	print "***DICTIONARIES***"
-	response = client.get_dictionaries()
-	printAllDictionaries(response,client)
+	# print "***DICTIONARIES***"
+	# response = client.get_dictionaries()
+	# printAllDictionaries(response,client)
 	# print "***POSITIONS***"
 	# response = client.get_positions()
 	# printPositions(response)
@@ -426,12 +450,12 @@ def main(argv=None):
 	print "***TYPES***"
 	response = client.get_decision_types()
 	printTypes(response,client)
-	print "***GEO***"
-	db = con.connectMySQL()
-	cur = db.cursor()
-	getGEO(cur)
-	db.commit()
-	db.close()
+	# print "***GEO***"
+	# db = con.connectMySQL()
+	# cur = db.cursor()
+	# getGEO(cur)
+	# db.commit()
+	# db.close()
 	# print '***SIGNERS***'
 	# response = client.get_organization_signers('6114')
 	# printSigners(response,'6114')
