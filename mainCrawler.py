@@ -77,7 +77,7 @@ def printTypesDetails(client,uid,uid_database,db,cur):
 	# wait = raw_input("PRESS TO CONTINUE...")
 	for extrafield in response['extraFields']:
 		print '\t\t\t'+extrafield['uid']
-		insertIntoTypesDetails(db,cur,extrafield,uid_database)
+		enter1 = False
 		for details in extrafield:
 			print '\t\t\t\t'+details+': ',
 			if (details=='fixedValueList' and extrafield[details]!=None):
@@ -86,14 +86,16 @@ def printTypesDetails(client,uid,uid_database,db,cur):
 					print '\t\t\t\t\t'+field
 			elif(details=='nestedFields' and extrafield[details]!=None):
 				print (' ')
+				enter1 = True
 				for field in extrafield[details]:
-					insertIntoTypesDetails(db,cur,field,uid_database)
+					enter2 = False
 					print '\t\t\t\t\t'+field['uid']
 					for nested_detail in field:
 						if (nested_detail!='uid' and nested_detail!='nestedFields'):
 							print '\t\t\t\t\t\t'+nested_detail+': ',
 							print field[nested_detail]
 						if(nested_detail=='nestedFields' and field[nested_detail]!=None):
+							enter2 = True
 							print (' ')
 							for field2 in field[nested_detail]:
 								print '\t\t\t\t\t\t\t'+field2['uid']
@@ -102,8 +104,10 @@ def printTypesDetails(client,uid,uid_database,db,cur):
 									if (nested_detail2!='uid'):
 										print '\t\t\t\t\t\t\t\t'+nested_detail2+': ',
 										print field2[nested_detail2]
+					if (!enter2) insertIntoTypesDetails(db,cur,field,uid_database)
 			else: 
 				print extrafield[details]
+		if (!enter1) insertIntoTypesDetails(db,cur,extrafield,uid_database)
 	if (response['parent']!=None): print '\t\tParent: '+response['parent']
 	db.commit()
 
@@ -413,12 +417,12 @@ def main(argv=None):
 	print "***DICTIONARIES***"
 	response = client.get_dictionaries()
 	printAllDictionaries(response,client)
-	print "***POSITIONS***"
-	response = client.get_positions()
-	printPositions(response)
-	print "***ORGANIZATIONS***"
-	response = client.get_organizations(status='all')
-	printOrganizations(response,client)
+	# print "***POSITIONS***"
+	# response = client.get_positions()
+	# printPositions(response)
+	# print "***ORGANIZATIONS***"
+	# response = client.get_organizations(status='all')
+	# printOrganizations(response,client)
 	print "***TYPES***"
 	response = client.get_decision_types()
 	printTypes(response,client)
@@ -428,9 +432,9 @@ def main(argv=None):
 	getGEO(cur)
 	db.commit()
 	db.close()
-	print '***SIGNERS***'
-	response = client.get_organization_signers('6114')
-	printSigners(response,'6114')
+	# print '***SIGNERS***'
+	# response = client.get_organization_signers('6114')
+	# printSigners(response,'6114')
 	# printAllDictionaries(response,client)
 	# response = client.get_organizations()
 	
