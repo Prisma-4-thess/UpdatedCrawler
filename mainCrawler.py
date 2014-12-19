@@ -438,27 +438,27 @@ def insertIntoSigners(db,cursor,value,uid):
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
-	# print "***DICTIONARIES***"
-	# response = client.get_dictionaries()
-	# printAllDictionaries(response,client)
-	# print "***POSITIONS***"
-	# response = client.get_positions()
-	# printPositions(response)
-	# print "***ORGANIZATIONS***"
-	# response = client.get_organizations(status='all')
-	# printOrganizations(response,client)
-	print "***TYPES***"
-	response = client.get_decision_types()
-	printTypes(response,client)
-	# print "***GEO***"
-	# db = con.connectMySQL()
-	# cur = db.cursor()
-	# getGEO(cur)
-	# db.commit()
-	# db.close()
-	# print '***SIGNERS***'
-	# response = client.get_organization_signers('6114')
-	# printSigners(response,'6114')
+	print "***DICTIONARIES***"
+	response = client.get_dictionaries()
+	printAllDictionaries(response,client)
+	print "***POSITIONS***"
+	response = client.get_positions()
+	printPositions(response)
+	print "***ORGANIZATIONS***"
+	response = client.get_organizations(status='all')
+	printOrganizations(response,client)
+	# print "***TYPES***"
+	# response = client.get_decision_types()
+	# printTypes(response,client)
+	print "***GEO***"
+	db = con.connectMySQL()
+	cur = db.cursor()
+	getGEO(cur)
+	db.commit()
+	db.close()
+	print '***SIGNERS***'
+	response = client.get_organization_signers('6114')
+	printSigners(response,'6114')
 	# printAllDictionaries(response,client)
 	# response = client.get_organizations()
 	
