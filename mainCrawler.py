@@ -463,7 +463,7 @@ def printDecisions (response):
 	# cursor = 1
 	decisions = response["decisions"]
 	for decision in decisions:
-		insertIntoDecisions(db,cursor,decision)
+		insertIntoDecisions(db,cur,decision)
 		# for i in decision:
 		# 	print i,":",decision[i]
 
