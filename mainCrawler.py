@@ -216,7 +216,7 @@ def actuallInsertion(fields,SQLcommand,cursor,db,value):
 	sql_val = []
 	for field in fields:
 		try:
-			if (value[field]==None):
+			if (value[field]==None or value[field]==''):
 				sql_val.append(None)
 			else:
 				sql_val.append(value[field])
@@ -278,6 +278,22 @@ def printOrganizations (response,client):
 				# print "\t"+key+": "+organization[key]
 		insertIntoOrganizations(db,cur,organization)
 		printUnits(client,organization["uid"],db,cur)
+	db.commit()
+	db.close()
+
+def printOneOrg (response,client):
+	'''Return all organizations from diavgeia
+
+	Arguments
+	response: a json response returned from OpendataClient
+	client: OpendataClient instance
+	'''
+	db = con.connectMySQL()
+	cur = db.cursor()
+	organization = response["organization"]
+	print organization['uid']
+	# insertIntoOrganizations(db,cur,organization)
+	# printUnits(client,organization["uid"],db,cur)
 	db.commit()
 	db.close()
 
@@ -438,15 +454,16 @@ def insertIntoSigners(db,cursor,value,uid):
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
-	print "***DICTIONARIES***"
-	response = client.get_dictionaries()
-	printAllDictionaries(response,client)
-	print "***POSITIONS***"
-	response = client.get_positions()
-	printPositions(response)
+	# print "***DICTIONARIES***"
+	# response = client.get_dictionaries()
+	# printAllDictionaries(response,client)
+	# print "***POSITIONS***"
+	# response = client.get_positions()
+	# printPositions(response)
 	print "***ORGANIZATIONS***"
-	response = client.get_organizations(status='all')
-	printOrganizations(response,client)
+	# response = client.get_organizations(status='all')
+	response = client.get_organization('30')
+	printOneOrg(response,client)
 	# print "***TYPES***"
 	# response = client.get_decision_types()
 	# printTypes(response,client)
@@ -456,9 +473,9 @@ def main(argv=None):
 	getGEO(cur)
 	db.commit()
 	db.close()
-	print '***SIGNERS***'
-	response = client.get_organization_signers('6114')
-	printSigners(response,'6114')
+	# print '***SIGNERS***'
+	# response = client.get_organization_signers('6114')
+	# printSigners(response,'6114')
 	# printAllDictionaries(response,client)
 	# response = client.get_organizations()
 	
