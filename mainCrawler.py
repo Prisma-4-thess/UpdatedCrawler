@@ -460,15 +460,15 @@ def main(argv=None):
 	# print "***POSITIONS***"
 	# response = client.get_positions()
 	# printPositions(response)
-	print "***ORGANIZATIONS***"
+	# print "***ORGANIZATIONS***"
 	# response = client.get_organizations(status='all')
-	response = client.get_organization('30')
-	printOneOrg(response,client)
-	response = client.get_organization('6114')
-	printOneOrg(response,client)
-	# print "***TYPES***"
-	# response = client.get_decision_types()
-	# printTypes(response,client)
+	# response = client.get_organization('30')
+	# printOneOrg(response,client)
+	# response = client.get_organization('6114')
+	# printOneOrg(response,client)
+	print "***TYPES***"
+	response = client.get_decision_types()
+	printTypes(response,client)
 	# print "***GEO***"
 	# db = con.connectMySQL()
 	# cur = db.cursor()
