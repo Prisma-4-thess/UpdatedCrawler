@@ -509,8 +509,8 @@ def main(argv=None):
 	print '***SIGNERS***'
 	response = client.get_organization_signers('6114')
 	printSigners(response,'6114')
-	printAllDictionaries(response,client)
-	response = client.get_organizations()
+	# printAllDictionaries(response,client)
+	# response = client.get_organizations()
 	print '***DECISIONS***'
 	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
 	response = client.get_advanced_search_results(q,page,query_size)
