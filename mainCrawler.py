@@ -481,36 +481,36 @@ def insertIntoDecisions(db,cursor,value):
 	value: A dictionary for all values for one entry
 	uid: The uid of the organization
 	'''
-	fields = ['ada','versionId','ada','correctedVersionId','issueDate','organizationId','privateData','protocolNumber','subject','submissionTimestamp','decisionTypeId']
-	SQLcommand = "insert into decision(ada, version_id, decision_ada, decision_version_id, issue_date, organization_id, private_data, protocol_number, subject, submission_timestamp, type_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+	fields = ['ada','versionId','correctedVersionId','issueDate','organizationId','privateData','protocolNumber','subject','submissionTimestamp','decisionTypeId']
+	SQLcommand = "insert into decision(ada, version_id, corrected_version_id, issue_date, organization_id, private_data, protocol_number, subject, submission_timestamp, type_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 	actuallInsertion(fields,SQLcommand,cursor,db,value)
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
-	# print "***DICTIONARIES***"
-	# response = client.get_dictionaries()
-	# printAllDictionaries(response,client)
-	# print "***POSITIONS***"
-	# response = client.get_positions()
-	# printPositions(response)
-	# print "***ORGANIZATIONS***"
-	# response = client.get_organizations(status='all')
-	# response = client.get_organization('30')
-	# printOneOrg(response,client)
-	# response = client.get_organization('6114')
-	# printOneOrg(response,client)
-	# print "***TYPES***"
-	# response = client.get_decision_types()
-	# printTypes(response,client)
-	# print "***GEO***"
-	# db = con.connectMySQL()
-	# cur = db.cursor()
-	# getGEO(cur)
-	# db.commit()
-	# db.close()
-	# print '***SIGNERS***'
-	# response = client.get_organization_signers('6114')
-	# printSigners(response,'6114')
+	print "***DICTIONARIES***"
+	response = client.get_dictionaries()
+	printAllDictionaries(response,client)
+	print "***POSITIONS***"
+	response = client.get_positions()
+	printPositions(response)
+	print "***ORGANIZATIONS***"
+	response = client.get_organizations(status='all')
+	response = client.get_organization('30')
+	printOneOrg(response,client)
+	response = client.get_organization('6114')
+	printOneOrg(response,client)
+	print "***TYPES***"
+	response = client.get_decision_types()
+	printTypes(response,client)
+	print "***GEO***"
+	db = con.connectMySQL()
+	cur = db.cursor()
+	getGEO(cur)
+	db.commit()
+	db.close()
+	print '***SIGNERS***'
+	response = client.get_organization_signers('6114')
+	printSigners(response,'6114')
 	# printAllDictionaries(response,client)
 	# response = client.get_organizations()
 	print '***DECISIONS***'
