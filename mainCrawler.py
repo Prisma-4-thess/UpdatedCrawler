@@ -222,7 +222,7 @@ def actuallInsertion(fields,SQLcommand,cursor,db,value):
 				sql_val.append(value[field])
 		except:
 			sql_val.append(None)
-	# print (SQLcommand,sql_val)
+	print (SQLcommand,sql_val)
 	try:
 		cursor.execute(SQLcommand,sql_val)
 	except Exception as e:
@@ -470,6 +470,18 @@ def printDecisions (response):
 	db.commit()
 	db.close()
 
+def getDecisionsForRelations (response):
+	'''Print the urls of all decisions
+
+	Arguments:
+	response: a json response returned from OpendataClient 
+	'''
+	decisions = response["decisions"]
+	for decision in decisions:
+		for i in decision:
+			print i,":",decision[i]
+		relationInsertIntoDecisionDictionaryItem(decision)
+
 def insertIntoDecisions(db,cursor,value):
 	'''Insert signers into MySQL db
 
@@ -485,43 +497,45 @@ def insertIntoDecisions(db,cursor,value):
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
-	print "***DICTIONARIES***"
-	response = client.get_dictionaries()
-	printAllDictionaries(response,client)
-	print "***POSITIONS***"
-	response = client.get_positions()
-	printPositions(response)
-	print "***ORGANIZATIONS***"
-	response = client.get_organizations(status='all')
-	response = client.get_organization('30')
-	printOneOrg(response,client)
-	response = client.get_organization('6114')
-	printOneOrg(response,client)
-	print "***TYPES***"
-	response = client.get_decision_types()
-	printTypes(response,client)
-	print "***GEO***"
-	db = con.connectMySQL()
-	cur = db.cursor()
-	getGEO(cur)
-	db.commit()
-	db.close()
-	print '***SIGNERS***'
-	response = client.get_organization_signers('6114')
-	printSigners(response,'6114')
+	# print "***DICTIONARIES***"
+	# response = client.get_dictionaries()
 	# printAllDictionaries(response,client)
-	# response = client.get_organizations()
+	# print "***POSITIONS***"
+	# response = client.get_positions()
+	# printPositions(response)
+	# print "***ORGANIZATIONS***"
+	# response = client.get_organizations(status='all')
+	# response = client.get_organization('30')
+	# printOneOrg(response,client)
+	# response = client.get_organization('6114')
+	# printOneOrg(response,client)
+	# print "***TYPES***"
+	# response = client.get_decision_types()
+	# printTypes(response,client)
+	# print "***GEO***"
+	# db = con.connectMySQL()
+	# cur = db.cursor()
+	# getGEO(cur)
+	# db.commit()
+	# db.close()
+	# print '***SIGNERS***'
+	# response = client.get_organization_signers('6114')
+	# printSigners(response,'6114')
+	# # printAllDictionaries(response,client)
+	# # response = client.get_organizations()
 	print '***DECISIONS***'
 	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
 	response = client.get_advanced_search_results(q,page,query_size)
-	printDecisions(response)
+	getDecisionsForRelations(response)
+	# printDecisions(response)
 	total = printInfo (response)
 	print total
 	steps = total/query_size
 	for x in range(1,steps+1):
 		print("Page ",x)
 		response = client.get_advanced_search_results(q,x,query_size)
-		printDecisions(response)
+		# printDecisions(response)
+		getDecisionsForRelations(response)
 	# printTypes(response,client)
 	# printOrganizations(response,client)
 	# print (response);
@@ -544,7 +558,15 @@ def main(argv=None):
 
 # DECISION SPECIFIC RELATION TABLES
 
-# def relationInsertIntoDecisionDictionary_item
+def relationInsertIntoDecisionDictionaryItem(value):
+	# db = con.connectMySQL()
+	# cur = db.cursor()
+	fields = ['ada','versionId','thematicCategoryIds']
+	SQLcommand = "insert into decision_dictionary_item(ada, version_id, them_cat_id) VALUES (%s,%s,%s)"
+	actuallInsertion(fields,SQLcommand,1,1,value)
+	# db.commit()
+	# db.close()
+
 
 # def relationInsertIntoDecisionSigner
 
