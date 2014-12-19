@@ -467,8 +467,8 @@ def printDecisions (response):
 		# for i in decision:
 		# 	print i,":",decision[i]
 
-	# db.commit()
-	# db.close()
+	db.commit()
+	db.close()
 
 def insertIntoDecisions(db,cursor,value):
 	'''Insert signers into MySQL db
