@@ -290,10 +290,10 @@ def printOneOrg (response,client):
 	'''
 	db = con.connectMySQL()
 	cur = db.cursor()
-	organization = response["organization"]
+	organization = response
 	print organization['uid']
-	# insertIntoOrganizations(db,cur,organization)
-	# printUnits(client,organization["uid"],db,cur)
+	insertIntoOrganizations(db,cur,organization)
+	printUnits(client,organization["uid"],db,cur)
 	db.commit()
 	db.close()
 
@@ -464,15 +464,17 @@ def main(argv=None):
 	# response = client.get_organizations(status='all')
 	response = client.get_organization('30')
 	printOneOrg(response,client)
+	response = client.get_organization('6114')
+	printOneOrg(response,client)
 	# print "***TYPES***"
 	# response = client.get_decision_types()
 	# printTypes(response,client)
-	print "***GEO***"
-	db = con.connectMySQL()
-	cur = db.cursor()
-	getGEO(cur)
-	db.commit()
-	db.close()
+	# print "***GEO***"
+	# db = con.connectMySQL()
+	# cur = db.cursor()
+	# getGEO(cur)
+	# db.commit()
+	# db.close()
 	# print '***SIGNERS***'
 	# response = client.get_organization_signers('6114')
 	# printSigners(response,'6114')
