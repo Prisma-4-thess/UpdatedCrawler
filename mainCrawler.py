@@ -222,7 +222,7 @@ def actuallInsertion(fields,SQLcommand,cursor,db,value):
 				sql_val.append(value[field])
 		except:
 			sql_val.append(None)
-	print (SQLcommand,sql_val)
+	# print (SQLcommand,sql_val)
 	try:
 		cursor.execute(SQLcommand,sql_val)
 	except Exception as e:
@@ -370,7 +370,6 @@ def insertIntoPositions(db,cursor,value):
 	SQLcommand = "insert into org_position(orgPosition_id,label) VALUES (%s,%s)"
 	actuallInsertion(fields,SQLcommand,cursor,db,value)
 
-
 def getGEO(csr):
 	query = (
 		 "INSERT INTO geo"
@@ -452,6 +451,40 @@ def insertIntoSigners(db,cursor,value,uid):
 	value['myOrgId'] = uid
 	actuallInsertion(fields,SQLcommand,cursor,db,value)
 
+def printDecisions (response):
+	'''Print the urls of all decisions
+
+	Arguments:
+	response: a json response returned from OpendataClient 
+	'''
+	db = con.connectMySQL()
+	cur = db.cursor()
+	# db = 1
+	# cursor = 1
+	decisions = response["decisions"]
+	for decision in decisions:
+		insertIntoDecisions(db,cursor,decision)
+		# for i in decision:
+		# 	print i,":",decision[i]
+
+	# db.commit()
+	# db.close()
+
+
+
+def insertIntoDecisions(db,cursor,value):
+	'''Insert signers into MySQL db
+
+	Arguments
+	db: Connection to MySQL database
+	cursor: Cursor for the db
+	value: A dictionary for all values for one entry
+	uid: The uid of the organization
+	'''
+	fields = ['ada','versionId','ada','correctedVersionId','issueDate','organizationId','privateData','protocolNumber','subject','submissionTimestamp','decisionTypeId']
+	SQLcommand = "insert into decision(ada, version_id, decision_ada, decision_version_id, issue_date, organization_id, private_data, protocol_number, subject, submission_timestamp, type_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+	actuallInsertion(fields,SQLcommand,cursor,db,value)
+
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	# print "***DICTIONARIES***"
@@ -466,9 +499,9 @@ def main(argv=None):
 	# printOneOrg(response,client)
 	# response = client.get_organization('6114')
 	# printOneOrg(response,client)
-	print "***TYPES***"
-	response = client.get_decision_types()
-	printTypes(response,client)
+	# print "***TYPES***"
+	# response = client.get_decision_types()
+	# printTypes(response,client)
 	# print "***GEO***"
 	# db = con.connectMySQL()
 	# cur = db.cursor()
@@ -480,7 +513,17 @@ def main(argv=None):
 	# printSigners(response,'6114')
 	# printAllDictionaries(response,client)
 	# response = client.get_organizations()
-	
+	print '***DECISIONS***'
+	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
+	response = client.get_advanced_search_results(q,page,query_size)
+	printDecisions(response)
+	total = printInfo (response)
+	print total
+	steps = total/query_size
+	for x in range(1,steps+1):
+		print("Page ",x)
+		response = client.get_advanced_search_results(q,x,query_size)
+		printDecisions(response)
 	# printTypes(response,client)
 	# printOrganizations(response,client)
 	# print (response);
