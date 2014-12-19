@@ -470,8 +470,6 @@ def printDecisions (response):
 	# db.commit()
 	# db.close()
 
-
-
 def insertIntoDecisions(db,cursor,value):
 	'''Insert signers into MySQL db
 
@@ -482,7 +480,7 @@ def insertIntoDecisions(db,cursor,value):
 	uid: The uid of the organization
 	'''
 	fields = ['ada','versionId','correctedVersionId','issueDate','organizationId','privateData','protocolNumber','subject','submissionTimestamp','decisionTypeId']
-	SQLcommand = "insert into decision(ada, version_id, corrected_version_id, issue_date, organization_id, private_data, protocol_number, subject, submission_timestamp, type_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
+	SQLcommand = "insert into decision(ada, version_id, corrected_version_id, issue_date, org_id, private_data, protocol_number, subject, submission_timestamp, type_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 	actuallInsertion(fields,SQLcommand,cursor,db,value)
 
 def main(argv=None):
@@ -543,6 +541,20 @@ def main(argv=None):
 	# 		response = client.get_advanced_search_results(q,x,query_size)
 	# 		printAllDecisionsPDF(response,organization)
 	return 0
+
+# DECISION SPECIFIC RELATION TABLES
+
+def relationInsertIntoDecisionDictionary_item
+
+def relationInsertIntoDecisionSigner
+
+def relationInsertIntoDecisionUnit
+
+# DICTIONARY RELATION
+
+def relationInsertIntoDictionaryItem
+
+# EXTRA FIELD RELATION
 
 if __name__ == "__main__":
 	sys.exit(main())
