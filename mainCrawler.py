@@ -483,6 +483,18 @@ def getDecisionsForRelations (response):
 		relationInsertIntoDecisionDictionaryItem(decision)
 		relationInsertIntoDecisionSigner(decision)
 
+def getOrganizationsForRelations (response):
+	organizations = response["organizations"]
+	for organization in organizations:
+		# print "Organization "+organization["uid"]
+		relationInsertIntoOrganizationDictionaryItem(organization)
+
+		# for key in organization:
+			# print organization[key]!=None
+			# print key
+			# if (organization[key]!=None and key!='uid' and key!='organizationDomains'):
+				# print "\t"+key+": "+organization[key]
+
 def insertIntoDecisions(db,cursor,value):
 	'''Insert signers into MySQL db
 
@@ -603,7 +615,19 @@ def relationInsertIntoDecisionUnit(value):
 
 # DICTIONARY RELATION
 
-# def relationInsertIntoDictionaryItem
+def relationInsertIntoOrganizationDictionaryItem(value):
+	db = con.connectMySQL()
+	cur = db.cursor()
+	for domain in value['organizationDomains']:
+		# print value['ada'],
+		# print value['versionId'],
+		# print thematicCatergory
+		fields = ['uid','domain']
+		value['domain'] = domain
+		SQLcommand = "insert into organization_dictionary_item(organization_id,item_id) VALUES (%s,%s)"
+		actuallInsertion(fields,SQLcommand,cur,db,value)
+	db.commit()
+	db.close()
 
 # EXTRA FIELD RELATION
 
