@@ -481,6 +481,7 @@ def getDecisionsForRelations (response):
 		# for i in decision:
 			# print i,":",decision[i]
 		relationInsertIntoDecisionDictionaryItem(decision)
+		relationInsertIntoDecisionSigner(decision)
 
 def insertIntoDecisions(db,cursor,value):
 	'''Insert signers into MySQL db
@@ -568,6 +569,20 @@ def relationInsertIntoDecisionDictionaryItem(value):
 		fields = ['ada','versionId','thematicCategoryId']
 		value['thematicCategoryId'] = thematicCatergory
 		SQLcommand = "insert into decision_dictionary_item(decision_ada, decision_version, them_cat_id) VALUES (%s,%s,%s)"
+		actuallInsertion(fields,SQLcommand,cur,db,value)
+	db.commit()
+	db.close()
+
+def relationInsertIntoDecisionSigner(value):
+	db = con.connectMySQL()
+	cur = db.cursor()
+	for signer in value['signerIds']:
+		# print value['ada'],
+		# print value['versionId'],
+		# print thematicCatergory
+		fields = ['ada','versionId','signerId']
+		value['signerId'] = signer
+		SQLcommand = "insert into decision_dictionary_item(decision_ada, decision_version, signer_id) VALUES (%s,%s,%s)"
 		actuallInsertion(fields,SQLcommand,cur,db,value)
 	db.commit()
 	db.close()
