@@ -582,15 +582,24 @@ def relationInsertIntoDecisionSigner(value):
 		# print thematicCatergory
 		fields = ['ada','versionId','signerId']
 		value['signerId'] = signer
-		SQLcommand = "insert into decision_dictionary_item(decision_ada, decision_version, signer_id) VALUES (%s,%s,%s)"
+		SQLcommand = "insert into decision_signer(decision_ada, decision_version, signer_id) VALUES (%s,%s,%s)"
 		actuallInsertion(fields,SQLcommand,cur,db,value)
 	db.commit()
 	db.close()
 
-
-# def relationInsertIntoDecisionSigner
-
-# def relationInsertIntoDecisionUnit
+def relationInsertIntoDecisionUnit(value):
+	db = con.connectMySQL()
+	cur = db.cursor()
+	for unit in value['unitIds']:
+		# print value['ada'],
+		# print value['versionId'],
+		# print thematicCatergory
+		fields = ['ada','versionId','unitId']
+		value['unitId'] = unit
+		SQLcommand = "insert into decision_unit(decision_ada, decision_version, unit_id) VALUES (%s,%s,%s)"
+		actuallInsertion(fields,SQLcommand,cur,db,value)
+	db.commit()
+	db.close()
 
 # DICTIONARY RELATION
 
