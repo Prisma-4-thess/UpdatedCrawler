@@ -533,6 +533,15 @@ def recursiveExtraFieldsForRelation(db,cursor,newu,extraFields,parent_id):
 			fields = ['uid','type_id','multiple','required']
 			SQLcommand = "insert into type_extra_field(parent_id, extra_field_id, mutliple,required) VALUES (%s,%s,%s,%s)"
 			actuallInsertion(fields,SQLcommand,cur,db,value)
+			# Extra Field Fixed Value List
+			try:
+				for fixed in value['fixedValueList']:
+					value['fixed_value'] = fixed
+					fields = ['uid','fixed_value']
+					SQLcommand = "insert into extra_feild_fixed_value_list(extra_field_id, fixed_value_list) VALUES (%s,%s)"
+					actuallInsertion(fields,SQLcommand,cur,db,value)
+			except:
+				print "No fixed value"
 			# insertIntoTypesDetails(db,cursor,extraField,parent_id)
 		else:
 			recursiveExtraFields(db,cursor,newu+extraField['uid']+'-',extraField['nestedFields'],parent_id)
