@@ -567,7 +567,7 @@ def relationInsertIntoDecisionDictionaryItem(value):
 		# print thematicCatergory
 		fields = ['ada','versionId','thematicCategoryId']
 		value['thematicCategoryId'] = thematicCatergory
-		SQLcommand = "insert into decision_dictionary_item(ada, version_id, them_cat_id) VALUES (%s,%s,%s)"
+		SQLcommand = "insert into decision_dictionary_item(decision_ada, decision_version, them_cat_id) VALUES (%s,%s,%s)"
 		actuallInsertion(fields,SQLcommand,cur,db,value)
 	db.commit()
 	db.close()
