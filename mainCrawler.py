@@ -495,6 +495,39 @@ def getOrganizationsForRelations (response):
 			# if (organization[key]!=None and key!='uid' and key!='organizationDomains'):
 				# print "\t"+key+": "+organization[key]
 
+def getTypesForRelation (response):
+	d_types = response["decisionTypes"]
+	for d_type in d_types:
+		printTypesDetails(d_type['uid'].encode('utf-8'),d_type['uid'])
+
+def getExtraFieldsForRelation (uid_temp,uid):
+	db = con.connectMySQL()
+	cur = db.cursor()
+	response = client.get_decision_type_details(uid_temp)
+	extraFields = response['extraFields']
+	recursiveExtraFieldsForRelation(db,cur,'',extraFields,uid)
+	db.commit()
+	db.close()
+
+def recursiveExtraFieldsForRelation(db,cursor,newu,extraFields,parent_id):
+	for extraField in extraFields:
+		# print (extraField['uid'])
+		# print (extraField['nestedFields'])
+		if not extraField['nestedFields']:
+			print(newu+extraField['uid'])
+			extraField['uid'] = newu+extraField['uid']
+			value = []
+			value['uid'] = extraField['uid']
+			value['type_id'] = parent_id
+			value['multiple'] = extraField['multiple']
+			value['required'] = extraField['required']
+			fields = ['uid','type_id','multiple','required']
+			SQLcommand = "insert into type_extra_field(parent_id, extra_field_id, mutliple,required) VALUES (%s,%s,%s,%s)"
+			actuallInsertion(fields,SQLcommand,cur,db,value)
+			# insertIntoTypesDetails(db,cursor,extraField,parent_id)
+		else:
+			recursiveExtraFields(db,cursor,newu+extraField['uid']+'-',extraField['nestedFields'],parent_id)
+
 def insertIntoDecisions(db,cursor,value):
 	'''Insert signers into MySQL db
 
