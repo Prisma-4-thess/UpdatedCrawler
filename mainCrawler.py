@@ -483,11 +483,15 @@ def getDecisionsForRelations (response):
 		relationInsertIntoDecisionDictionaryItem(decision)
 		relationInsertIntoDecisionSigner(decision)
 
-def getOrganizationsForRelations (response):
-	organizations = response["organizations"]
-	for organization in organizations:
+def getOrganizationsForRelation (response,client):
+	# One org
+	relationInsertIntoOrganizationDictionaryItem(response)
+	getUnitsForRelation(response['uid'],client)
+	# Many orgs
+	# organizations = response["organizations"]
+	# for organization in organizations:
 		# print "Organization "+organization["uid"]
-		relationInsertIntoOrganizationDictionaryItem(organization)
+		# relationInsertIntoOrganizationDictionaryItem(organization)
 
 		# for key in organization:
 			# print organization[key]!=None
@@ -495,10 +499,15 @@ def getOrganizationsForRelations (response):
 			# if (organization[key]!=None and key!='uid' and key!='organizationDomains'):
 				# print "\t"+key+": "+organization[key]
 
+def getUnitsForRelation(uid,client):
+	units = client.get_organization_units(uid)['units']
+	for unit in units:
+		relationInsertIntoUnitDictionaryItem(unit)
+
 def getTypesForRelation (response):
 	d_types = response["decisionTypes"]
 	for d_type in d_types:
-		printTypesDetails(d_type['uid'].encode('utf-8'),d_type['uid'])
+		getExtraFieldsForRelation(d_type['uid'].encode('utf-8'),d_type['uid'])
 
 def getExtraFieldsForRelation (uid_temp,uid):
 	db = con.connectMySQL()
@@ -658,6 +667,20 @@ def relationInsertIntoOrganizationDictionaryItem(value):
 		fields = ['uid','domain']
 		value['domain'] = domain
 		SQLcommand = "insert into organization_dictionary_item(organization_id,item_id) VALUES (%s,%s)"
+		actuallInsertion(fields,SQLcommand,cur,db,value)
+	db.commit()
+	db.close()
+
+def relationInsertIntoUnitDictionaryItem(value):
+	db = con.connectMySQL()
+	cur = db.cursor()
+	for domain in value['unitDomains']:
+		# print value['ada'],
+		# print value['versionId'],
+		# print thematicCatergory
+		fields = ['uid','domain']
+		value['domain'] = domain
+		SQLcommand = "insert into unit_dictionary_item(unit_id,item_id) VALUES (%s,%s)"
 		actuallInsertion(fields,SQLcommand,cur,db,value)
 	db.commit()
 	db.close()
