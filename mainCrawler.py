@@ -675,6 +675,18 @@ def importingOrganization(client):
 	db.commit()
 	db.close()
 
+def importingUnits(client):
+	db = con.connectMySQL()
+	cur = db.cursor()
+	units = client.get_organization_units('6114')['units']
+	for unit in units:
+		fields = ['uid','label','active','myParentId']
+		SQLcommand = "insert into unit(unit_id,label,active,org_id) VALUES (%s,%s,%s,%s)"
+		value['myParentId']='6114'
+		actuallInsertion(fields,SQLcommand,cur,db,unit)
+	db.commit()
+	db.close()
+
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	print "***DICTIONARY ITEMS***"
@@ -685,6 +697,8 @@ def main(argv=None):
 	# importingGeo()
 	print "***ORGANIZATION***"
 	importingOrganization(client)
+	print "***UNITS***"
+	importingUnits(client)
 	# print '***DECISIONS***'
 	# q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
 	# response = client.get_advanced_search_results(q,page,query_size)
