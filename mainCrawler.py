@@ -643,11 +643,25 @@ def importingDictionaryItems(client):
 	db.commit()
 	db.close()
 
+def importingTypes(client):
+	response = client.get_decision_types()	
+	db = con.connectMySQL()
+	cur = db.cursor()
+	d_types = response["decisionTypes"]
+	for d_type in d_types:
+		fields = ['uid','label']
+		SQLcommand = "insert into type(type_id,label) VALUES (%s,%s)"
+		actuallInsertion(fields,SQLcommand,cur,db,item)
+	db.commit()
+	db.close()
+
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	print "***DICTIONARY ITEMS***"
 	importingDictionaryItems(client)
+	print "***TYPES***"
+	importingTypes(client)
 	# print '***DECISIONS***'
 	# q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
 	# response = client.get_advanced_search_results(q,page,query_size)
