@@ -782,8 +782,8 @@ def main(argv=None):
 	importingDictionaryItems(client)
 	print "***TYPES***"
 	importingTypes(client)
-	print "***GEO***"
-	importingGeo()
+	# print "***GEO***"
+	# importingGeo()
 	print "***ORGANIZATION***"
 	importingOrganization(client)
 	print "***UNITS***"
