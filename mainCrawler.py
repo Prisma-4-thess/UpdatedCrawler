@@ -678,7 +678,7 @@ def importingOrganization(client):
 def importingUnits(client):
 	db = con.connectMySQL()
 	cur = db.cursor()
-	units = client.get_organization_units('6114')['units']
+	units = client.get_organization_units('6114','all')['units']
 	for unit in units:
 		fields = ['uid','label','active','myParentId']
 		SQLcommand = "insert into unit(unit_id,label,active,org_id) VALUES (%s,%s,%s,%s)"
