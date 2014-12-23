@@ -700,20 +700,32 @@ def importingSigners(client):
 	db.commit()
 	db.close()
 
+def fillingSignerUnitRelation(client):
+	db = con.connectMySQL()
+	cur = db.cursor()
+	cur.execute("SELECT uid FROM SIGNER")
+	for row in cur.fetchall():
+		print row[0]
+		client.get_signer(row[0])
+	db.close()
+
+
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	print "***DICTIONARY ITEMS***"
-	importingDictionaryItems(client)
+	# importingDictionaryItems(client)
 	print "***TYPES***"
-	importingTypes(client)
+	# importingTypes(client)
 	# print "***GEO***"
 	# importingGeo()
 	print "***ORGANIZATION***"
-	importingOrganization(client)
+	# importingOrganization(client)
 	print "***UNITS***"
-	importingUnits(client)
+	# importingUnits(client)
 	print '***SIGNERS***'
-	importingSigners(client)
+	# importingSigners(client)
+	print "***SIGNER - UNIT***"
+	fillingSignerUnitRelation(client)
 	# print '***DECISIONS***'
 	# q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
 	# response = client.get_advanced_search_results(q,page,query_size)
