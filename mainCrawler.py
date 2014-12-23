@@ -373,8 +373,8 @@ def insertIntoPositions(db,cursor,value):
 def getGEO(csr):
 	query = (
 		 "INSERT INTO geo"
-		 "(version,address,dimos,latitude,longitude,namegrk,new_cat,new_sub_cat,phone,tk)"
-		 "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")  
+		 "(address,dimos,latitude,longitude,namegrk,new_cat,new_sub_cat,phone,tk)"
+		 "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)")  
 
 	tree = ET.ElementTree(file='poi_thessalonikis.kml')
 	root = tree.getroot()
@@ -655,6 +655,12 @@ def importingTypes(client):
 	db.commit()
 	db.close()
 
+def importingGeo():
+	db = con.connectMySQL()
+	cur = db.cursor()
+	getGEO(cur)
+	db.commit()
+	db.close()
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
@@ -662,6 +668,8 @@ def main(argv=None):
 	importingDictionaryItems(client)
 	print "***TYPES***"
 	importingTypes(client)
+	print "***GEO***"
+	importingGeo()
 	# print '***DECISIONS***'
 	# q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
 	# response = client.get_advanced_search_results(q,page,query_size)
