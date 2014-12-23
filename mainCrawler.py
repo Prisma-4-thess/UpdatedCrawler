@@ -687,6 +687,19 @@ def importingUnits(client):
 	db.commit()
 	db.close()
 
+def importingSigners(client):
+	response = client.get_organization_signers_all('6114')
+	db = con.connectMySQL()
+	cur = db.cursor()
+	signers = response['signers']
+	for signer in signers:
+		fields = ['uid','active','activeFrom','activeUntil','firstName','lastName','myOrgId']
+		SQLcommand = "insert into signer(signer_id,active,active_from,active_until,first_name,last_name,org_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+		signer['myOrgId'] = '6114'
+		actuallInsertion(fields,SQLcommand,cur,db,signer)
+	db.commit()
+	db.close()
+
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	print "***DICTIONARY ITEMS***"
@@ -699,6 +712,7 @@ def main(argv=None):
 	importingOrganization(client)
 	print "***UNITS***"
 	importingUnits(client)
+	print '***SIGNERS***'
 	# print '***DECISIONS***'
 	# q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
 	# response = client.get_advanced_search_results(q,page,query_size)

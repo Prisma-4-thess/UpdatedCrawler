@@ -191,6 +191,13 @@ class OpendataClient(object):
         """
         return self._get_resource('/organizations/{0}/signers'.format(org))
     
+    def get_organization_signers_all(self, org):
+        """Returns the signers that belong to the specified organization.
+        
+        Arguments:
+        org: uid or latin name of an organization
+        """
+        return self._get_resource('/organizations/{0}/signers?status=all'.format(org))
     
     def get_organization_positions(self, org):
         """Returns the positions that are defined for the specified organization.
