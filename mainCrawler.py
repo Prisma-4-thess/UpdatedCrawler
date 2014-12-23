@@ -559,69 +559,6 @@ def insertIntoDecisions(db,cursor,value):
 	SQLcommand = "insert into decision(ada, version_id, corrected_version_id, issue_date, org_id, private_data, protocol_number, subject, submission_timestamp, type_id) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
 	actuallInsertion(fields,SQLcommand,cursor,db,value)
 
-def main(argv=None):
-	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
-	print "***DICTIONARIES***"
-	response = client.get_dictionaries()
-	printAllDictionaries(response,client)
-	print "***POSITIONS***"
-	response = client.get_positions()
-	printPositions(response)
-	print "***ORGANIZATIONS***"
-	# response = client.get_organizations(status='all')
-	response = client.get_organization('30')
-	printOneOrg(response,client)
-	response = client.get_organization('6114')
-	printOneOrg(response,client)
-	print "***TYPES***"
-	response = client.get_decision_types()
-	printTypes(response,client)
-	print "***GEO***"
-	db = con.connectMySQL()
-	cur = db.cursor()
-	getGEO(cur)
-	db.commit()
-	db.close()
-	print '***SIGNERS***'
-	response = client.get_organization_signers('6114')
-	printSigners(response,'6114')
-	# # printAllDictionaries(response,client)
-	# # response = client.get_organizations()
-	print '***DECISIONS***'
-	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
-	response = client.get_advanced_search_results(q,page,query_size)
-	getDecisionsForRelations(response)
-	printDecisions(response)
-	total = printInfo (response)
-	print total
-	steps = total/query_size
-	for x in range(1,steps+1):
-		print("Page ",x)
-		response = client.get_advanced_search_results(q,x,query_size)
-		printDecisions(response)
-		getDecisionsForRelations(response)
-	# printTypes(response,client)
-	# printOrganizations(response,client)
-	# print (response);
-	# content = [line.strip() for line in open('organizationsPeriferia')]
-	# for organization in content:
-	# 	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:"+organization+")"
-	# 	print q;
-	# 	response = client.get_advanced_search_results(q,page,query_size)
-	# 	total = printInfo (response)
-	# 	# print (total)
-	# 	steps = total/query_size
-	# 	# print (steps)
-	# 	# print ("***ACTUAL DECISIONS***")
-	# 	printAllDecisionsPDF(response,organization)
-	# 	for x in range(1,steps+1):
-	# 		print("Page ",x)
-	# 		response = client.get_advanced_search_results(q,x,query_size)
-	# 		printAllDecisionsPDF(response,organization)
-	return 0
-
-# DECISION SPECIFIC RELATION TABLES
-
 def relationInsertIntoDecisionDictionaryItem(value):
 	db = con.connectMySQL()
 	cur = db.cursor()
@@ -694,7 +631,80 @@ def relationInsertIntoUnitDictionaryItem(value):
 	db.commit()
 	db.close()
 
-# EXTRA FIELD RELATION
+def importingDictionaryItems(client):
+	response = client.get_dictionary('THK')
+	db = con.connectMySQL()
+	cur = db.cursor()
+	items = response["items"]
+	for item in items:
+		fields = ['uid','label']
+		SQLcommand = "insert into dictionary_item(dictionary_item_id,label) VALUES (%s,%s)"
+		actuallInsertion(fields,SQLcommand,cur,db,item)
+
+
+def main(argv=None):
+	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
+	print "***DICTIONARY ITEMS***"
+	importingDictionaryItems(client)
+	# print '***DECISIONS***'
+	# q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
+	# response = client.get_advanced_search_results(q,page,query_size)
+	# printDecisions(response)
+	# getDecisionsForRelations(response)
+	# total = printInfo (response)
+	# print total
+	# steps = total/query_size
+	# for x in range(1,steps+1):
+	# 	print("Page ",x)
+	# 	response = client.get_advanced_search_results(q,x,query_size)
+	# 	printDecisions(response)
+	# 	getDecisionsForRelations(response)
+
+	# *** OLD CODE ***
+	
+	# print "***POSITIONS***"
+	# response = client.get_positions()
+	# printPositions(response)
+	# print "***ORGANIZATIONS***"
+	# # response = client.get_organizations(status='all')
+	# response = client.get_organization('30')
+	# printOneOrg(response,client)
+	# response = client.get_organization('6114')
+	# printOneOrg(response,client)
+	# print "***TYPES***"
+	# response = client.get_decision_types()
+	# printTypes(response,client)
+	# print "***GEO***"
+	# db = con.connectMySQL()
+	# cur = db.cursor()
+	# getGEO(cur)
+	# db.commit()
+	# db.close()
+	# print '***SIGNERS***'
+	# response = client.get_organization_signers('6114')
+	# printSigners(response,'6114')
+	# # printAllDictionaries(response,client)
+	# # response = client.get_organizations()
+	# printTypes(response,client)
+	# printOrganizations(response,client)
+	# print (response);
+	# content = [line.strip() for line in open('organizationsPeriferia')]
+	# for organization in content:
+	# 	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:"+organization+")"
+	# 	print q;
+	# 	response = client.get_advanced_search_results(q,page,query_size)
+	# 	total = printInfo (response)
+	# 	# print (total)
+	# 	steps = total/query_size
+	# 	# print (steps)
+	# 	# print ("***ACTUAL DECISIONS***")
+	# 	printAllDecisionsPDF(response,organization)
+	# 	for x in range(1,steps+1):
+	# 		print("Page ",x)
+	# 		response = client.get_advanced_search_results(q,x,query_size)
+	# 		printAllDecisionsPDF(response,organization)
+	return 0
+
 
 if __name__ == "__main__":
 	sys.exit(main())
