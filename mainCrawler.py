@@ -409,7 +409,7 @@ def getGEO(csr):
 			coordstr=coord.text.split(',',2)
 			coordX=coordstr[1]
 			coordY=coordstr[0]
-			data = (1,address,dimos,coordX,coordY,namegrk,newcat,newsubcat,phone,tk)
+			data = (address,dimos,coordX,coordY,namegrk,newcat,newsubcat,phone,tk)
 			# for temp in data:
 			#   print (temp)
 			try:
