@@ -761,6 +761,7 @@ def fillingDecisionsRelationships(client):
 			SQLcommand = "insert into decision_dictionary_item(decision_ada,decision_version_id,dictionary_item_id) VALUES (%s,%s,%s)"
 			actuallInsertion(fields,SQLcommand,cur,db,value)
 		extraFields = response['extraFieldValues']
+		print extraFields
 		importingRecursiveExtraFields(db,cur,'',extraFields)
 	db.commit()
 	db.close()
