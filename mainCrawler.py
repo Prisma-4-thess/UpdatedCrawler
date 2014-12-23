@@ -747,27 +747,27 @@ def fillingThematicCategories(client):
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
-	print "***DICTIONARY ITEMS***"
+	# print "***DICTIONARY ITEMS***"
 	# importingDictionaryItems(client)
-	print "***TYPES***"
+	# print "***TYPES***"
 	# importingTypes(client)
 	# print "***GEO***"
 	# importingGeo()
-	print "***ORGANIZATION***"
+	# print "***ORGANIZATION***"
 	# importingOrganization(client)
-	print "***UNITS***"
-	importingUnits(client)
-	print '***SIGNERS***'
+	# print "***UNITS***"
+	# importingUnits(client)
+	# print '***SIGNERS***'
 	# importingSigners(client)
-	print "***SIGNER - UNIT***"
-	fillingSignerUnitRelation(client)
-	print '***DECISIONS***'
-	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
-	response = client.get_advanced_search_results(q,page,query_size)
-	total = printInfo (response)
-	steps = total/query_size
-	for x in range(0,steps+1):
-		importingDecisions(client,x)
+	# print "***SIGNER - UNIT***"
+	# fillingSignerUnitRelation(client)
+	# print '***DECISIONS***'
+	# q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
+	# response = client.get_advanced_search_results(q,page,query_size)
+	# total = printInfo (response)
+	# steps = total/query_size
+	# for x in range(0,steps+1):
+	# 	importingDecisions(client,x)
 	fillingThematicCategories(client)
 	# printDecisions(response)
 	# getDecisionsForRelations(response)
