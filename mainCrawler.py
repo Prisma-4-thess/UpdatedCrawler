@@ -730,7 +730,7 @@ def importingDecisions(client,current_page):
 		fields = ['ada','versionId','correctedVersionId','issueDate','protocolNumber','subject','decisionTypeId']
 		SQLcommand = "insert into decision(ada, version_id, corrected_version_id, issue_date, protocol_number, subject, type_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
 		actuallInsertion(fields,SQLcommand,cur,db,decision)
-		thematicCategoryIds = response['thematicCategoryIds']
+		thematicCategoryIds = decision['thematicCategoryIds']
 		for thematic in thematicCategoryIds:
 			value = {}
 			value['decisionAda'] = decision['ada']
@@ -739,7 +739,7 @@ def importingDecisions(client,current_page):
 			fields = ['decisionAda','versionId','thematic']
 			SQLcommand = "insert into decision_dictionary_item(decision_ada,decision_version_id,dictionary_item_id) VALUES (%s,%s,%s)"
 			actuallInsertion(fields,SQLcommand,cur,db,value)
-		extraFields = response['extraFieldValues']
+		extraFields = decision['extraFieldValues']
 		importingRecursiveExtraFields(db,cur,'',extraFields)
 		var = raw_input("Click to continue...")
 	db.commit()
