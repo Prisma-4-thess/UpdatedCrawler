@@ -640,6 +640,8 @@ def importingDictionaryItems(client):
 		fields = ['uid','label']
 		SQLcommand = "insert into dictionary_item(dictionary_item_id,label) VALUES (%s,%s)"
 		actuallInsertion(fields,SQLcommand,cur,db,item)
+	db.commit()
+	db.close()
 
 
 def main(argv=None):
@@ -661,7 +663,7 @@ def main(argv=None):
 	# 	getDecisionsForRelations(response)
 
 	# *** OLD CODE ***
-	
+
 	# print "***POSITIONS***"
 	# response = client.get_positions()
 	# printPositions(response)
