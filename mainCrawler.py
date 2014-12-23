@@ -713,6 +713,7 @@ def main(argv=None):
 	print "***UNITS***"
 	importingUnits(client)
 	print '***SIGNERS***'
+	importingSigners(client)
 	# print '***DECISIONS***'
 	# q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
 	# response = client.get_advanced_search_results(q,page,query_size)
