@@ -741,7 +741,13 @@ def fillingThematicCategories(client):
 		response = client.get_decision(row[0].encode('utf-8'))
 		thematicCategoryIds = response['thematicCategoryIds']
 		for thematic in thematicCategoryIds:
-			print thematic
+			value = []
+			value['decisionAda'] = row[0]
+			value['versionId'] = row[1]
+			value['thematic'] = thematic
+			fields = ['decisionAda','versionId','thematic']
+			SQLcommand = "insert into decision_dictionary_item(decision_ada,decision_version_id,dictionary_item_id) VALUES (%s,%s,%s)"
+			actuallInsertion(fields,SQLcommand,cur,db,value)
 	db.commit()
 	db.close()
 
