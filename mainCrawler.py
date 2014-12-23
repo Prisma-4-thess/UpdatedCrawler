@@ -685,7 +685,10 @@ def importingUnits(client):
 		unit['myParentId']='6114'
 		actuallInsertion(fields,SQLcommand,cur,db,unit)
 	SQLcommand = "insert into unit(unit_id,label,org_id) VALUES ('6114','ΔΗΜΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ','6114')"
-	cur.execute(SQLcommand)
+	try:
+		cur.execute(SQLcommand)
+	except:
+		print "Already in"
 	db.commit()
 	db.close()
 
