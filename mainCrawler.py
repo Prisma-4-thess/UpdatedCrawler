@@ -684,6 +684,8 @@ def importingUnits(client):
 		SQLcommand = "insert into unit(unit_id,label,active,org_id) VALUES (%s,%s,%s,%s)"
 		unit['myParentId']='6114'
 		actuallInsertion(fields,SQLcommand,cur,db,unit)
+	SQLcommand = "insert into unit(unit_id,label,org_id) VALUES ('6114','ΔΗΜΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ','6114')"
+	cur.execute(SQLcommand)
 	db.commit()
 	db.close()
 
@@ -727,7 +729,7 @@ def main(argv=None):
 	print "***ORGANIZATION***"
 	# importingOrganization(client)
 	print "***UNITS***"
-	# importingUnits(client)
+	importingUnits(client)
 	print '***SIGNERS***'
 	# importingSigners(client)
 	print "***SIGNER - UNIT***"
