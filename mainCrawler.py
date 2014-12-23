@@ -662,14 +662,29 @@ def importingGeo():
 	db.commit()
 	db.close()
 
+def importingOrganization(client):
+	db = con.connectMySQL()
+	cur = db.cursor()
+	response = client.get_organization('6114')
+	organization = response
+	fields = ['uid','label','odeManagerEmail','status','vatNumber','website']
+	# SQLcommand = "insert into organization('organization_id','abbreviation','category_id','fek_issue_id','fek_number','fek_year','label','latin','ode_manager_email','status','supervisor_id','vat_number','website') VALUES ("+values+")"
+	SQLcommand = "insert into organization(organization_id,label,ode_manager_email,status,vat_number,website) VALUES (%s,%s,%s,%s,%s,%s)"
+	# print SQLcommand
+	actuallInsertion(fields,SQLcommand,cur,db,value)
+	db.commit()
+	db.close()
+
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	print "***DICTIONARY ITEMS***"
 	importingDictionaryItems(client)
 	print "***TYPES***"
 	importingTypes(client)
-	print "***GEO***"
-	importingGeo()
+	# print "***GEO***"
+	# importingGeo()
+	print "***ORGANIZATION***"
+	importingOrganization(client)
 	# print '***DECISIONS***'
 	# q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
 	# response = client.get_advanced_search_results(q,page,query_size)
