@@ -725,6 +725,8 @@ def importingDecisions(client,current_page):
 	response = client.get_advanced_search_results(q,current_page,query_size)
 	db = con.connectMySQL()
 	cur = db.cursor()
+	# db = 1
+	# cur = 1
 	decisions = response["decisions"]
 	for decision in decisions:
 		fields = ['ada','versionId','correctedVersionId','issueDate','protocolNumber','subject','decisionTypeId']
@@ -768,31 +770,49 @@ def fillingDecisionsRelationships(client):
 
 def importingRecursiveExtraFields(db,cursor,newu,extraFields):
 	for extraField in extraFields:
-		# print (extraField['uid'])
-		# print (extraField['nestedFields'])
-		if not extraField['nestedFields']:
-			print(newu+extraField['uid'])
-			extraField['uid'] = newu+extraField['uid']
-			# insertIntoTypesDetails(db,cursor,extraField,parent_id)
+		if type(extraField) is list or type(extraField) is dict:
+			importingRecursiveExtraFields(db,cursor,newu,extraField)
 		else:
-			recursiveExtraFields(db,cursor,newu+extraField['uid']+'-',extraField['nestedFields'])
+			# print (extraField['uid'])
+			# print (extraField['nestedFields'])
+			# print newu+extraField
+			if type(extraFields) is list:
+				print newu[:-1]+': ',
+				print extraField
+			else:
+				if type(extraFields[extraField]) is list:
+					# print "List yes"
+					importingRecursiveExtraFields(db,cursor,newu+extraField+'-',extraFields[extraField])
+				elif type(extraFields[extraField]) is dict:
+					# print "Dict yes"
+					importingRecursiveExtraFields(db,cursor,newu+extraField+'-',extraFields[extraField])
+				else:
+					# print "Whoot?!?"
+					print newu+extraField+': ',
+					print extraFields[extraField]
+			# if not extraValue:
+				# print(newu+extraField)
+				# extraField['uid'] = newu+extraField['uid']
+				# insertIntoTypesDetails(db,cursor,extraField,parent_id)
+			# else:
+				# importingRecursiveExtraFields(db,cursor,newu+extraField+'-',extraFields[extraField])
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	print "***DICTIONARY ITEMS***"
-	importingDictionaryItems(client)
+	# importingDictionaryItems(client)
 	print "***TYPES***"
-	importingTypes(client)
+	# importingTypes(client)
 	# print "***GEO***"
 	# importingGeo()
 	print "***ORGANIZATION***"
-	importingOrganization(client)
+	# importingOrganization(client)
 	print "***UNITS***"
-	importingUnits(client)
+	# importingUnits(client)
 	print '***SIGNERS***'
-	importingSigners(client)
+	# importingSigners(client)
 	print "***SIGNER - UNIT***"
-	fillingSignerUnitRelation(client)
+	# fillingSignerUnitRelation(client)
 	print '***DECISIONS***'
 	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
 	response = client.get_advanced_search_results(q,page,query_size)
