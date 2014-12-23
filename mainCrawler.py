@@ -705,9 +705,13 @@ def fillingSignerUnitRelation(client):
 	cur = db.cursor()
 	cur.execute("SELECT signer_id FROM signer")
 	for row in cur.fetchall():
-		print row[0]
 		response = client.get_signer(row[0])
-		print (response)
+		units = response['units']
+		for unit in units:
+			fields = ['signerId','uid','positionLabel']
+			unit['signerId'] = row[0]
+			SQLcommand = "insert into signer_unit(signer_id,unit_id,position) VALUES (%s,%s,%s)"
+			actuallInsertion(fields,SQLcommand,cur,db,unit)
 	db.close()
 
 
