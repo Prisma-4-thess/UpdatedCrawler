@@ -682,7 +682,7 @@ def importingUnits(client):
 	for unit in units:
 		fields = ['uid','label','active','myParentId']
 		SQLcommand = "insert into unit(unit_id,label,active,org_id) VALUES (%s,%s,%s,%s)"
-		value['myParentId']='6114'
+		unit['myParentId']='6114'
 		actuallInsertion(fields,SQLcommand,cur,db,unit)
 	db.commit()
 	db.close()
