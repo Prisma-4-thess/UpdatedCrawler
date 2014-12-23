@@ -712,6 +712,7 @@ def fillingSignerUnitRelation(client):
 			unit['signerId'] = row[0]
 			SQLcommand = "insert into signer_unit(signer_id,unit_id,position) VALUES (%s,%s,%s)"
 			actuallInsertion(fields,SQLcommand,cur,db,unit)
+	db.commit()
 	db.close()
 
 
