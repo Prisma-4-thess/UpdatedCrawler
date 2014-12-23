@@ -738,7 +738,7 @@ def fillingThematicCategories(client):
 	cur = db.cursor()
 	cur.execute("SELECT ada,version_id FROM decision")
 	for row in cur.fetchall():
-		response = client.get_decision(row[0])
+		response = client.get_decision(row[0].encode('utf-8'))
 		thematicCategoryIds = response['thematicCategoryIds']
 		for thematic in thematicCategoryIds:
 			print thematic
