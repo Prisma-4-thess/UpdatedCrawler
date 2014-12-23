@@ -651,7 +651,7 @@ def importingTypes(client):
 	for d_type in d_types:
 		fields = ['uid','label']
 		SQLcommand = "insert into type(type_id,label) VALUES (%s,%s)"
-		actuallInsertion(fields,SQLcommand,cur,db,item)
+		actuallInsertion(fields,SQLcommand,cur,db,d_type)
 	db.commit()
 	db.close()
 
