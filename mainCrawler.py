@@ -720,6 +720,18 @@ def fillingSignerUnitRelation(client):
 	db.commit()
 	db.close()
 
+def importingDecisions(client,current_page):
+	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
+	response = client.get_advanced_search_results(q,current_page,query_size)
+	db = con.connectMySQL()
+	cur = db.cursor()
+	decisions = response["decisions"]
+	for decision in decisions:
+		fields = ['ada','versionId','correctedVersionId','issueDate','protocolNumber','subject','decisionTypeId']
+		SQLcommand = "insert into decision(ada, version_id, corrected_version_id, issue_date, protocol_number, subject, type_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+		actuallInsertion(fields,SQLcommand,cur,db,decision)
+	db.commit()
+	db.close()
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
@@ -737,9 +749,13 @@ def main(argv=None):
 	# importingSigners(client)
 	print "***SIGNER - UNIT***"
 	fillingSignerUnitRelation(client)
-	# print '***DECISIONS***'
-	# q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
-	# response = client.get_advanced_search_results(q,page,query_size)
+	print '***DECISIONS***'
+	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
+	response = client.get_advanced_search_results(q,page,query_size)
+	total = printInfo (response)
+	steps = total/query_size
+	for x in range(0,steps+1):
+		importingDecisions(client,x)
 	# printDecisions(response)
 	# getDecisionsForRelations(response)
 	# total = printInfo (response)
