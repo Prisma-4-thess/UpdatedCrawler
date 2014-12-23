@@ -765,7 +765,7 @@ def fillingDecisionsRelationships(client):
 	db.commit()
 	db.close()
 
-def importingRecursiveExtraFields(db,cursor,newu,extraFields,parent_id):
+def importingRecursiveExtraFields(db,cursor,newu,extraFields):
 	for extraField in extraFields:
 		# print (extraField['uid'])
 		# print (extraField['nestedFields'])
@@ -774,7 +774,7 @@ def importingRecursiveExtraFields(db,cursor,newu,extraFields,parent_id):
 			extraField['uid'] = newu+extraField['uid']
 			# insertIntoTypesDetails(db,cursor,extraField,parent_id)
 		else:
-			recursiveExtraFields(db,cursor,newu+extraField['uid']+'-',extraField['nestedFields'],parent_id)
+			recursiveExtraFields(db,cursor,newu+extraField['uid']+'-',extraField['nestedFields'])
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
