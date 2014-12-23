@@ -741,7 +741,7 @@ def fillingThematicCategories(client):
 		response = client.get_decision(row[0].encode('utf-8'))
 		thematicCategoryIds = response['thematicCategoryIds']
 		for thematic in thematicCategoryIds:
-			value = []
+			value = {}
 			value['decisionAda'] = row[0]
 			value['versionId'] = row[1]
 			value['thematic'] = thematic
