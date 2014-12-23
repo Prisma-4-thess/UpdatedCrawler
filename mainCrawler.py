@@ -736,7 +736,7 @@ def importingDecisions(client,current_page):
 def fillingThematicCategories(client):
 	db = con.connectMySQL()
 	cur = db.cursor()
-	cur.execute("SELECT ada,version_id FROM signer")
+	cur.execute("SELECT ada,version_id FROM decision")
 	for row in cur.fetchall():
 		response = client.get_decision(row[0])
 		thematicCategoryIds = response['thematicCategoryIds']
