@@ -733,6 +733,18 @@ def importingDecisions(client,current_page):
 	db.commit()
 	db.close()
 
+def fillingThematicCategories(client):
+	db = con.connectMySQL()
+	cur = db.cursor()
+	cur.execute("SELECT ada,version_id FROM signer")
+	for row in cur.fetchall():
+		response = client.get_decision(row[0])
+		thematicCategoryIds = response['thematicCategoryIds']
+		for thematic in thematicCategoryIds:
+			print thematic
+	db.commit()
+	db.close()
+
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	print "***DICTIONARY ITEMS***"
@@ -756,6 +768,7 @@ def main(argv=None):
 	steps = total/query_size
 	for x in range(0,steps+1):
 		importingDecisions(client,x)
+	fillingThematicCategories(client)
 	# printDecisions(response)
 	# getDecisionsForRelations(response)
 	# total = printInfo (response)
