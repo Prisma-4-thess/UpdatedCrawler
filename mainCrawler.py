@@ -703,7 +703,7 @@ def importingSigners(client):
 def fillingSignerUnitRelation(client):
 	db = con.connectMySQL()
 	cur = db.cursor()
-	cur.execute("SELECT uid FROM SIGNER")
+	cur.execute("SELECT signer_id FROM signer")
 	for row in cur.fetchall():
 		print row[0]
 		client.get_signer(row[0])
