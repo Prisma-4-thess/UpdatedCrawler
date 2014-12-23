@@ -671,7 +671,7 @@ def importingOrganization(client):
 	# SQLcommand = "insert into organization('organization_id','abbreviation','category_id','fek_issue_id','fek_number','fek_year','label','latin','ode_manager_email','status','supervisor_id','vat_number','website') VALUES ("+values+")"
 	SQLcommand = "insert into organization(organization_id,label,ode_manager_email,status,vat_number,website) VALUES (%s,%s,%s,%s,%s,%s)"
 	# print SQLcommand
-	actuallInsertion(fields,SQLcommand,cur,db,value)
+	actuallInsertion(fields,SQLcommand,cur,db,organization)
 	db.commit()
 	db.close()
 
