@@ -786,7 +786,7 @@ def fillingDecisionsRelationships(client):
 def importingRecursiveExtraFields(db,cursor,newu,extraFields,ada,versionId):
 	for extraField in extraFields:
 		if type(extraField) is list or type(extraField) is dict:
-			importingRecursiveExtraFields(db,cursor,newu,extraField)
+			importingRecursiveExtraFields(db,cursor,newu,extraField,ada,versionId)
 		else:
 			# print (extraField['uid'])
 			# print (extraField['nestedFields'])
@@ -805,10 +805,10 @@ def importingRecursiveExtraFields(db,cursor,newu,extraFields,ada,versionId):
 			else:
 				if type(extraFields[extraField]) is list:
 					# print "List yes"
-					importingRecursiveExtraFields(db,cursor,newu+extraField+'-',extraFields[extraField])
+					importingRecursiveExtraFields(db,cursor,newu+extraField+'-',extraFields[extraField],ada,versionId)
 				elif type(extraFields[extraField]) is dict:
 					# print "Dict yes"
-					importingRecursiveExtraFields(db,cursor,newu+extraField+'-',extraFields[extraField])
+					importingRecursiveExtraFields(db,cursor,newu+extraField+'-',extraFields[extraField],ada,versionId)
 				else:
 					# print "Whoot?!?"
 					print newu+extraField+': ',
