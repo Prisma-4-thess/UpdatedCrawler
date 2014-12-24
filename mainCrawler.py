@@ -742,8 +742,21 @@ def importingDecisions(client,current_page):
 			SQLcommand = "insert into decision_dictionary_item(decision_ada,decision_version_id,dictionary_item_id) VALUES (%s,%s,%s)"
 			actuallInsertion(fields,SQLcommand,cur,db,value)
 		extraFields = decision['extraFieldValues']
-		print extraFields
-		importingRecursiveExtraFields(db,cur,'',extraFields)
+		importingRecursiveExtraFields(db,cur,'',extraFields,decision['ada'],decision['versionId'])
+		for unit in decision['unitIds']:
+			value = {}
+			value['decisionAda'] = decision['ada']
+			value['versionId'] = decision['versionId']
+			value['unit'] = unit
+			fields = ['decisionAda','versionId','unit']
+			SQLcommand = "insert into decision_unit(decision_ada,decision_version_id,unit_id) VALUES (%s,%s,%s)"
+		for signer in decision['signerIds']:
+			value = {}
+			value['decisionAda'] = decision['ada']
+			value['versionId'] = decision['versionId']
+			value['signer'] = signer
+			fields = ['decisionAda','versionId','signer']
+			SQLcommand = "insert into decision_signer(decision_ada,decision_version_id,signer_id) VALUES (%s,%s,%s)"
 		var = raw_input("Click to continue...")
 	db.commit()
 	db.close()
@@ -768,7 +781,9 @@ def fillingDecisionsRelationships(client):
 	db.commit()
 	db.close()
 
-def importingRecursiveExtraFields(db,cursor,newu,extraFields):
+
+
+def importingRecursiveExtraFields(db,cursor,newu,extraFields,ada,versionId):
 	for extraField in extraFields:
 		if type(extraField) is list or type(extraField) is dict:
 			importingRecursiveExtraFields(db,cursor,newu,extraField)
@@ -779,6 +794,14 @@ def importingRecursiveExtraFields(db,cursor,newu,extraFields):
 			if type(extraFields) is list:
 				print newu[:-1]+': ',
 				print extraField
+				value = {}
+				value['ada'] = ada
+				value['version'] = versionId
+				value['extraFieldName'] = newu[:-1]
+				value['extraFieldValue'] = extraField
+				fields = ['ada','version','extraFieldName','extraFieldValue']
+				SQLcommand = "insert into extra_field (decision_ada,decision_version_id,extra_field_name,extra_field_value) VALUES (%s,%s,%s,%s)"
+				actuallInsertion(fields,SQLcommand,cursor,db,value)
 			else:
 				if type(extraFields[extraField]) is list:
 					# print "List yes"
@@ -790,6 +813,14 @@ def importingRecursiveExtraFields(db,cursor,newu,extraFields):
 					# print "Whoot?!?"
 					print newu+extraField+': ',
 					print extraFields[extraField]
+					value = {}
+					value['ada'] = ada
+					value['version'] = versionId
+					value['extraFieldName'] = newu+extraField
+					value['extraFieldValue'] = extraFields[extraField]
+					fields = ['ada','version','extraFieldName','extraFieldValue']
+					SQLcommand = "insert into extra_field (decision_ada,decision_version_id,extra_field_name,extra_field_value) VALUES (%s,%s,%s,%s)"
+					actuallInsertion(fields,SQLcommand,cursor,db,value)
 			# if not extraValue:
 				# print(newu+extraField)
 				# extraField['uid'] = newu+extraField['uid']
