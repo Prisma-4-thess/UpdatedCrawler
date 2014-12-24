@@ -757,7 +757,7 @@ def importingDecisions(client,current_page):
 			value['signer'] = signer
 			fields = ['decisionAda','versionId','signer']
 			SQLcommand = "insert into decision_signer(decision_ada,decision_version_id,signer_id) VALUES (%s,%s,%s)"
-		var = raw_input("Click to continue...")
+		# var = raw_input("Click to continue...")
 	db.commit()
 	db.close()
 
