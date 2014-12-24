@@ -750,6 +750,7 @@ def importingDecisions(client,current_page):
 			value['unit'] = unit
 			fields = ['decisionAda','versionId','unit']
 			SQLcommand = "insert into decision_unit(decision_ada,decision_version_id,unit_id) VALUES (%s,%s,%s)"
+			actuallInsertion(fields,SQLcommand,cur,db,value)
 		for signer in decision['signerIds']:
 			value = {}
 			value['decisionAda'] = decision['ada']
@@ -757,6 +758,7 @@ def importingDecisions(client,current_page):
 			value['signer'] = signer
 			fields = ['decisionAda','versionId','signer']
 			SQLcommand = "insert into decision_signer(decision_ada,decision_version_id,signer_id) VALUES (%s,%s,%s)"
+			actuallInsertion(fields,SQLcommand,cur,db,value)
 		# var = raw_input("Click to continue...")
 	db.commit()
 	db.close()
@@ -850,6 +852,7 @@ def main(argv=None):
 	total = printInfo (response)
 	steps = total/query_size
 	for x in range(0,steps+1):
+		print "Page: "+str(x)
 		importingDecisions(client,x)
 	# printDecisions(response)
 	# getDecisionsForRelations(response)
