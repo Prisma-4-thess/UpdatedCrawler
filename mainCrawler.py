@@ -830,17 +830,22 @@ def importingRecursiveExtraFields(db,cursor,newu,extraFields,ada,versionId):
 			# else:
 				# importingRecursiveExtraFields(db,cursor,newu+extraField+'-',extraFields[extraField])
 
-def findGrailsId(db,cur,uid,table):
+def findGrailsId(db,cur,field,uid,table):
 	'''Find the ID created by grails for the current item.
 
 	Arguments:
 	db: Database connector.
 	cur: Database cursor instance.
-	uid: The Prisma uid for the current item.
+	field: The field name holding Diavgeia uid
+	uid: The Diavgeia uid for the current item.
 	table: The table name in the database.
 	'''
-	SQLcommand = "SELECT id FROM {0} WHERE uid = {1}".format(table,uid)
+	SQLcommand = "SELECT id FROM {0} WHERE {1} = {2}".format(table,field,uid)
 	print SQLcommand
+	cur.execute(SQLcommand)
+	for row in cur.fetchall():
+		print row[0]
+		return row[0]
 
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
