@@ -830,6 +830,18 @@ def importingRecursiveExtraFields(db,cursor,newu,extraFields,ada,versionId):
 			# else:
 				# importingRecursiveExtraFields(db,cursor,newu+extraField+'-',extraFields[extraField])
 
+def findGrailsId(db,cur,uid,table):
+	'''Find the ID created by grails for the current item.
+
+	Arguments:
+	db: Database connector.
+	cur: Database cursor instance.
+	uid: The Prisma uid for the current item.
+	table: The table name in the database.
+	'''
+	SQLcommand = "SELECT id FROM {0} WHERE uid = {1}".format(table,uid)
+	print SQLcommand
+
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	print "***DICTIONARY ITEMS***"
@@ -848,12 +860,18 @@ def main(argv=None):
 	# fillingSignerUnitRelation(client)
 	print '***DECISIONS***'
 	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
-	response = client.get_advanced_search_results(q,page,query_size)
-	total = printInfo (response)
-	steps = total/query_size
-	for x in range(0,steps+1):
-		print "Page: "+str(x)
-		importingDecisions(client,x)
+	# response = client.get_advanced_search_results(q,page,query_size)
+	# total = printInfo (response)
+	# steps = total/query_size
+	# for x in range(0,steps+1):
+	# 	print "Page: "+str(x)
+	# 	importingDecisions(client,x)
+	db = con.connectMySQL()
+	cur = db.cursor()
+	findGrailsId(db,cur,'6114','organization')
+	db.close()
+	# *** OLD CODE ***
+
 	# printDecisions(response)
 	# getDecisionsForRelations(response)
 	# total = printInfo (response)
@@ -864,8 +882,6 @@ def main(argv=None):
 	# 	response = client.get_advanced_search_results(q,x,query_size)
 	# 	printDecisions(response)
 	# 	getDecisionsForRelations(response)
-
-	# *** OLD CODE ***
 
 	# print "***POSITIONS***"
 	# response = client.get_positions()
