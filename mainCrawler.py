@@ -737,7 +737,7 @@ def importingDecisions(client,current_page):
 		decision['decisionTypeId'] = g_id
 		SQLcommand = "insert into decision(ada, version_id, corrected_version_id, issue_date, protocol_number, subject, type_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
 		actuallInsertion(fields,SQLcommand,cur,db,decision)
-		dec_id = findGrailsId(db,cur,decision['versionId'],decision['ada'])
+		dec_id = findGrailsId(db,cur,decision['versionId'].encode('utf-8'),decision['ada'].encode('utf-8'))
 		thematicCategoryIds = decision['thematicCategoryIds']
 		for thematic in thematicCategoryIds:
 			value = {}
