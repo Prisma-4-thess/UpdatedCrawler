@@ -715,8 +715,9 @@ def fillingSignerUnitRelation(client):
 		response = client.get_signer(row[0])
 		units = response['units']
 		for unit in units:
+			unit['uid'] = findGrailsId(db,cur,'unit',unit['uid'])
 			fields = ['signerId','uid','positionLabel']
-			unit['signerId'] = row[0]
+			unit['signerId'] = findGrailsId(db,cur,'signer',row[0])
 			SQLcommand = "insert into signer_unit(signer_id,unit_id,position) VALUES (%s,%s,%s)"
 			actuallInsertion(fields,SQLcommand,cur,db,unit)
 	db.commit()
@@ -853,19 +854,19 @@ def findGrailsId(db,cur,table,uid):
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	print "***DICTIONARY ITEMS***"
-	#importingDictionaryItems(client)
+	importingDictionaryItems(client)
 	print "***TYPES***"
-	#importingTypes(client)
+	importingTypes(client)
 	print "***GEO***"
-	#importingGeo()
+	# importingGeo()
 	print "***ORGANIZATION***"
-	#importingOrganization(client)
+	importingOrganization(client)
 	print "***UNITS***"
 	importingUnits(client)
 	print '***SIGNERS***'
-	#importingSigners(client)
-	# print "***SIGNER - UNIT***"
-	# fillingSignerUnitRelation(client)
+	importingSigners(client)
+	print "***SIGNER - UNIT***"
+	fillingSignerUnitRelation(client)
 	print '***DECISIONS***'
 	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
 	response = client.get_advanced_search_results(q,page,query_size)
