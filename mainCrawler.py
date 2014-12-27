@@ -638,7 +638,7 @@ def importingDictionaryItems(client):
 	items = response["items"]
 	for item in items:
 		fields = ['uid','label']
-		SQLcommand = "insert into dictionary_item(dictionary_item_id,label) VALUES (%s,%s)"
+		SQLcommand = "insert into dictionary_item(uid,label) VALUES (%s,%s)"
 		actuallInsertion(fields,SQLcommand,cur,db,item)
 	db.commit()
 	db.close()
@@ -650,7 +650,7 @@ def importingTypes(client):
 	d_types = response["decisionTypes"]
 	for d_type in d_types:
 		fields = ['uid','label']
-		SQLcommand = "insert into type(type_id,label) VALUES (%s,%s)"
+		SQLcommand = "insert into type(uid,label) VALUES (%s,%s)"
 		actuallInsertion(fields,SQLcommand,cur,db,d_type)
 	db.commit()
 	db.close()
@@ -669,7 +669,7 @@ def importingOrganization(client):
 	organization = response
 	fields = ['uid','label','odeManagerEmail','status','vatNumber','website']
 	# SQLcommand = "insert into organization('organization_id','abbreviation','category_id','fek_issue_id','fek_number','fek_year','label','latin','ode_manager_email','status','supervisor_id','vat_number','website') VALUES ("+values+")"
-	SQLcommand = "insert into organization(organization_id,label,ode_manager_email,status,vat_number,website) VALUES (%s,%s,%s,%s,%s,%s)"
+	SQLcommand = "insert into organization(uid,label,ode_manager_email,status,vat_number,website) VALUES (%s,%s,%s,%s,%s,%s)"
 	# print SQLcommand
 	actuallInsertion(fields,SQLcommand,cur,db,organization)
 	db.commit()
@@ -679,12 +679,13 @@ def importingUnits(client):
 	db = con.connectMySQL()
 	cur = db.cursor()
 	units = client.get_organization_units('6114','all')['units']
+	g_id=findGrailsId(db,cur,'organization','6114')
 	for unit in units:
 		fields = ['uid','label','active','myParentId']
-		SQLcommand = "insert into unit(unit_id,label,active,org_id) VALUES (%s,%s,%s,%s)"
-		unit['myParentId']='6114'
+		SQLcommand = "insert into unit(uid,label,active,parent_id) VALUES (%s,%s,%s,%s)"
+		unit['myParentId']=g_id
 		actuallInsertion(fields,SQLcommand,cur,db,unit)
-	SQLcommand = "insert into unit(unit_id,label,org_id) VALUES ('6114','ΔΗΜΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ','6114')"
+	SQLcommand = "insert into unit(uid,label,org_id) VALUES ('6114','ΔΗΜΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ','{0}'')".format(g_id)
 	try:
 		cur.execute(SQLcommand)
 	except:
@@ -697,10 +698,11 @@ def importingSigners(client):
 	db = con.connectMySQL()
 	cur = db.cursor()
 	signers = response['signers']
+	g_id = findGrailsId(db,cur,'organization','6114')
 	for signer in signers:
 		fields = ['uid','active','activeFrom','activeUntil','firstName','lastName','myOrgId']
-		SQLcommand = "insert into signer(signer_id,active,active_from,active_until,first_name,last_name,org_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-		signer['myOrgId'] = '6114'
+		SQLcommand = "insert into signer(uid,active,active_from,active_until,first_name,last_name,org_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+		signer['myOrgId'] = g_id
 		actuallInsertion(fields,SQLcommand,cur,db,signer)
 	db.commit()
 	db.close()
@@ -730,6 +732,8 @@ def importingDecisions(client,current_page):
 	decisions = response["decisions"]
 	for decision in decisions:
 		fields = ['ada','versionId','correctedVersionId','issueDate','protocolNumber','subject','decisionTypeId']
+		g_id = findGrailsId(db,cur,'type',decision['decisionTypeId'].encode('utf-8'))
+		decision['decisionTypeId'] = g_id
 		SQLcommand = "insert into decision(ada, version_id, corrected_version_id, issue_date, protocol_number, subject, type_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
 		actuallInsertion(fields,SQLcommand,cur,db,decision)
 		thematicCategoryIds = decision['thematicCategoryIds']
@@ -830,21 +834,37 @@ def importingRecursiveExtraFields(db,cursor,newu,extraFields,ada,versionId):
 			# else:
 				# importingRecursiveExtraFields(db,cursor,newu+extraField+'-',extraFields[extraField])
 
+def findGrailsId(db,cur,table,uid):
+	'''Find the ID created by grails for the current item.
+
+	Arguments:
+	db: Database connector.
+	cur: Database cursor instance.
+	uid: The Prisma uid for the current item.
+	table: The table name in the database.
+	'''
+	SQLcommand = "SELECT id FROM {0} WHERE uid = '{1}'".format(table,uid)
+	print SQLcommand
+	cur.execute(SQLcommand)
+	for row in cur.fetchall():
+		print row[0]
+		return row[0]
+
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	print "***DICTIONARY ITEMS***"
-	# importingDictionaryItems(client)
+	importingDictionaryItems(client)
 	print "***TYPES***"
-	# importingTypes(client)
-	# print "***GEO***"
-	# importingGeo()
+	importingTypes(client)
+	print "***GEO***"
+	#importingGeo()
 	print "***ORGANIZATION***"
-	# importingOrganization(client)
+	importingOrganization(client)
 	print "***UNITS***"
-	# importingUnits(client)
+	importingUnits(client)
 	print '***SIGNERS***'
-	# importingSigners(client)
-	print "***SIGNER - UNIT***"
+	importingSigners(client)
+	# print "***SIGNER - UNIT***"
 	# fillingSignerUnitRelation(client)
 	print '***DECISIONS***'
 	q = "submissionTimestamp:[DT(2006-03-01T00:00:00) TO DT(2014-11-11T23:59:59)] AND (organizationUid:6114)"
@@ -854,6 +874,12 @@ def main(argv=None):
 	for x in range(0,steps+1):
 		print "Page: "+str(x)
 		importingDecisions(client,x)
+	# db = con.connectMySQL()
+	# cur = db.cursor()
+	# findGrailsId(db,cur,'6114','organization')
+	# db.close()
+	# *** OLD CODE ***
+
 	# printDecisions(response)
 	# getDecisionsForRelations(response)
 	# total = printInfo (response)
@@ -864,8 +890,6 @@ def main(argv=None):
 	# 	response = client.get_advanced_search_results(q,x,query_size)
 	# 	printDecisions(response)
 	# 	getDecisionsForRelations(response)
-
-	# *** OLD CODE ***
 
 	# print "***POSITIONS***"
 	# response = client.get_positions()
