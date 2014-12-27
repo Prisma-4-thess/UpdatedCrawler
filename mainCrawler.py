@@ -743,7 +743,7 @@ def importingDecisions(client,current_page):
 			value = {}
 			value['decisionId'] = dec_id
 			value['thematicId'] = findGrailsId(db,cur,'dictionary_item',thematic.encode('utf-8'))
-			fields = ['decisionId','thematicID']
+			fields = ['decisionId','thematicId']
 			SQLcommand = "insert into decision_dictionary_item(decision_thematic_cat_id,dictionary_item_id) VALUES (%s,%s)"
 			actuallInsertion(fields,SQLcommand,cur,db,value)
 		extraFields = decision['extraFieldValues']
