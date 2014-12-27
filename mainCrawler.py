@@ -759,8 +759,8 @@ def importingDecisions(client,current_page):
 			value = {}
 			value['decisionId'] = dec_id
 			value['signer'] = findGrailsId(db,cur,'signer',signer.encode('utf-8'))
-			fields = ['decisionAda','versionId','signer']
-			SQLcommand = "insert into decision_signer(decision_ada,decision_version_id,signer_id) VALUES (%s,%s,%s)"
+			fields = ['decisionId','signer']
+			SQLcommand = "insert into decision_signer(decision_signers_id,signer_id) VALUES (%s,%s)"
 			actuallInsertion(fields,SQLcommand,cur,db,value)
 		# var = raw_input("Click to continue...")
 	db.commit()
@@ -842,7 +842,11 @@ def findGrailsId(db,cur,table,uid):
 	'''
 	SQLcommand = "SELECT id FROM {0} WHERE uid = '{1}'".format(table,uid)
 	print SQLcommand
-	cur.execute(SQLcommand)
+	try:
+		cur.execute(SQLcommand)
+	except:
+		print 'Not Found Id'
+		return -1
 	for row in cur.fetchall():
 		print row[0]
 		return row[0]
@@ -858,7 +862,11 @@ def findDecisionId(db,cur,table,uid):
 	'''
 	SQLcommand = "SELECT id FROM decision WHERE version_id = '{0}' and ada = '{1}'".format(table,uid)
 	print SQLcommand
-	cur.execute(SQLcommand)
+	try:
+		cur.execute(SQLcommand)
+	except:
+		print 'Not Found Id'
+		return -1
 	for row in cur.fetchall():
 		print row[0]
 		return row[0]
