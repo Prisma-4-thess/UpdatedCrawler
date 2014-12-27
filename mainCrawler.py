@@ -853,17 +853,17 @@ def findGrailsId(db,cur,table,uid):
 def main(argv=None):
 	client = opendata.OpendataClient("https://diavgeia.gov.gr/luminapi/opendata")	
 	print "***DICTIONARY ITEMS***"
-	importingDictionaryItems(client)
+	#importingDictionaryItems(client)
 	print "***TYPES***"
-	importingTypes(client)
+	#importingTypes(client)
 	print "***GEO***"
 	#importingGeo()
 	print "***ORGANIZATION***"
-	importingOrganization(client)
+	#importingOrganization(client)
 	print "***UNITS***"
 	importingUnits(client)
 	print '***SIGNERS***'
-	importingSigners(client)
+	#importingSigners(client)
 	# print "***SIGNER - UNIT***"
 	# fillingSignerUnitRelation(client)
 	print '***DECISIONS***'
