@@ -751,7 +751,7 @@ def importingDecisions(client,current_page):
 		for unit in decision['unitIds']:
 			value = {}
 			value['decisionId'] = dec_id
-			value['unit'] = findGrailsId(db,cur,'dictionary_item',unit.encode('utf-8'))
+			value['unit'] = findGrailsId(db,cur,'unit',unit.encode('utf-8'))
 			fields = ['decisionId','unit']
 			SQLcommand = "insert into decision_unit(decision_units_id,unit_id) VALUES (%s,%s)"
 			actuallInsertion(fields,SQLcommand,cur,db,value)
