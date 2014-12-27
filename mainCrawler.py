@@ -856,7 +856,7 @@ def findDecisionId(db,cur,table,uid):
 	uid: The Prisma uid for the current item.
 	table: The table name in the database.
 	'''
-	SQLcommand = "SELECT id FROM decision WHERE version_id = '{1}' and ada = '{2}'".format(table,uid)
+	SQLcommand = "SELECT id FROM decision WHERE version_id = '{0}' and ada = '{1}'".format(table,uid)
 	print SQLcommand
 	cur.execute(SQLcommand)
 	for row in cur.fetchall():
