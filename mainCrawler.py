@@ -737,30 +737,28 @@ def importingDecisions(client,current_page):
 		decision['decisionTypeId'] = g_id
 		SQLcommand = "insert into decision(ada, version_id, corrected_version_id, issue_date, protocol_number, subject, type_id) VALUES (%s,%s,%s,%s,%s,%s,%s)"
 		actuallInsertion(fields,SQLcommand,cur,db,decision)
+		dec_id = findGrailsId(db,cur,decision['versionId'],decision['ada'])
 		thematicCategoryIds = decision['thematicCategoryIds']
 		for thematic in thematicCategoryIds:
 			value = {}
-			value['decisionAda'] = decision['ada']
-			value['versionId'] = decision['versionId']
-			value['thematic'] = thematic
-			fields = ['decisionAda','versionId','thematic']
-			SQLcommand = "insert into decision_dictionary_item(decision_ada,decision_version_id,dictionary_item_id) VALUES (%s,%s,%s)"
+			value['decisionId'] = dec_id
+			value['thematicId'] = findGrailsId(db,cur,'dictionary_item',thematic.encode('utf-8'))
+			fields = ['decisionId','thematicID']
+			SQLcommand = "insert into decision_dictionary_item(decision_thematic_cat_id,dictionary_item_id) VALUES (%s,%s)"
 			actuallInsertion(fields,SQLcommand,cur,db,value)
 		extraFields = decision['extraFieldValues']
-		importingRecursiveExtraFields(db,cur,'',extraFields,decision['ada'],decision['versionId'])
+		importingRecursiveExtraFields(db,cur,'',extraFields,dec_id)
 		for unit in decision['unitIds']:
 			value = {}
-			value['decisionAda'] = decision['ada']
-			value['versionId'] = decision['versionId']
-			value['unit'] = unit
-			fields = ['decisionAda','versionId','unit']
-			SQLcommand = "insert into decision_unit(decision_ada,decision_version_id,unit_id) VALUES (%s,%s,%s)"
+			value['decisionId'] = dec_id
+			value['unit'] = findGrailsId(db,cur,'dictionary_item',unit.encode('utf-8'))
+			fields = ['decisionId','unit']
+			SQLcommand = "insert into decision_unit(decision_units_id,unit_id) VALUES (%s,%s)"
 			actuallInsertion(fields,SQLcommand,cur,db,value)
 		for signer in decision['signerIds']:
 			value = {}
-			value['decisionAda'] = decision['ada']
-			value['versionId'] = decision['versionId']
-			value['signer'] = signer
+			value['decisionId'] = dec_id
+			value['signer'] = findGrailsId(db,cur,'signer',signer.encode('utf-8'))
 			fields = ['decisionAda','versionId','signer']
 			SQLcommand = "insert into decision_signer(decision_ada,decision_version_id,signer_id) VALUES (%s,%s,%s)"
 			actuallInsertion(fields,SQLcommand,cur,db,value)
@@ -790,7 +788,7 @@ def fillingDecisionsRelationships(client):
 
 
 
-def importingRecursiveExtraFields(db,cursor,newu,extraFields,ada,versionId):
+def importingRecursiveExtraFields(db,cursor,newu,extraFields,decisionId):
 	for extraField in extraFields:
 		if type(extraField) is list or type(extraField) is dict:
 			importingRecursiveExtraFields(db,cursor,newu,extraField,ada,versionId)
@@ -802,12 +800,11 @@ def importingRecursiveExtraFields(db,cursor,newu,extraFields,ada,versionId):
 				print newu[:-1]+': ',
 				print extraField
 				value = {}
-				value['ada'] = ada
-				value['version'] = versionId
+				value['decision'] = decisionId
 				value['extraFieldName'] = newu[:-1]
 				value['extraFieldValue'] = extraField
-				fields = ['ada','version','extraFieldName','extraFieldValue']
-				SQLcommand = "insert into extra_field (decision_ada,decision_version_id,extra_field_name,extra_field_value) VALUES (%s,%s,%s,%s)"
+				fields = ['decision','extraFieldName','extraFieldValue']
+				SQLcommand = "insert into extra_field (decision_id,extra_field_name,extra_field_value) VALUES (%s,%s,%s)"
 				actuallInsertion(fields,SQLcommand,cursor,db,value)
 			else:
 				if type(extraFields[extraField]) is list:
@@ -821,12 +818,11 @@ def importingRecursiveExtraFields(db,cursor,newu,extraFields,ada,versionId):
 					print newu+extraField+': ',
 					print extraFields[extraField]
 					value = {}
-					value['ada'] = ada
-					value['version'] = versionId
+					value['decision'] = decisionId
 					value['extraFieldName'] = newu+extraField
 					value['extraFieldValue'] = extraFields[extraField]
-					fields = ['ada','version','extraFieldName','extraFieldValue']
-					SQLcommand = "insert into extra_field (decision_ada,decision_version_id,extra_field_name,extra_field_value) VALUES (%s,%s,%s,%s)"
+					fields = ['decision','extraFieldName','extraFieldValue']
+					SQLcommand = "insert into extra_field (decision_id,extra_field_name,extra_field_value) VALUES (%s,%s,%s)"
 					actuallInsertion(fields,SQLcommand,cursor,db,value)
 			# if not extraValue:
 				# print(newu+extraField)
@@ -845,6 +841,22 @@ def findGrailsId(db,cur,table,uid):
 	table: The table name in the database.
 	'''
 	SQLcommand = "SELECT id FROM {0} WHERE uid = '{1}'".format(table,uid)
+	print SQLcommand
+	cur.execute(SQLcommand)
+	for row in cur.fetchall():
+		print row[0]
+		return row[0]
+
+def findDecisionId(db,cur,table,uid):
+	'''Find the ID created by grails for the current item.
+
+	Arguments:
+	db: Database connector.
+	cur: Database cursor instance.
+	uid: The Prisma uid for the current item.
+	table: The table name in the database.
+	'''
+	SQLcommand = "SELECT id FROM decision WHERE version_id = '{1}' and ada = '{2}'".format(table,uid)
 	print SQLcommand
 	cur.execute(SQLcommand)
 	for row in cur.fetchall():
