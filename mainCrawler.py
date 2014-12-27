@@ -688,7 +688,7 @@ def importingUnits(client):
 	SQLcommand = "insert into unit(uid,label,parent_id) VALUES ('6114','ΔΗΜΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ','{0}'')".format(g_id)
 	try:
 		cur.execute(SQLcommand)
-	except Exception e:
+	except Exception, e:
 		print e
 	db.commit()
 	db.close()
