@@ -685,7 +685,7 @@ def importingUnits(client):
 		SQLcommand = "insert into unit(uid,label,active,parent_id) VALUES (%s,%s,%s,%s)"
 		unit['myParentId']=g_id
 		actuallInsertion(fields,SQLcommand,cur,db,unit)
-	SQLcommand = "insert into unit(uid,label,org_id) VALUES ('6114','ΔΗΜΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ','{0}'')".format(g_id)
+	SQLcommand = "insert into unit(uid,label,parent_id) VALUES ('6114','ΔΗΜΟΣ ΘΕΣΣΑΛΟΝΙΚΗΣ','{0}'')".format(g_id)
 	try:
 		cur.execute(SQLcommand)
 	except:
